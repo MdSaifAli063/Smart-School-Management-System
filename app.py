@@ -48,7 +48,7 @@ def _getenv_clean(name: str, default: str | None = None) -> str | None:
 
 MONGODB_URI = _getenv_clean(
     "MONGODB_URI",
-    "mongodb+srv://Mdsaifali:Saif6343@saif1.n5mqz1l.mongodb.net/LoginSystem?retryWrites=true&w=majority",
+    "",
 )
 MONGODB_DB = _getenv_clean("MONGODB_DB", "school_app")
 PORT = int(_getenv_clean("PORT", "5000") or "5000")
