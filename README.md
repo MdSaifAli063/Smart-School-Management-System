@@ -15,7 +15,7 @@ Why use this project?
 
 ## Table of Contents
 
-- Features (in detail)
+- Features 
 - Architecture & Data Model
 - Quick Start (local)
 - Docker & Production
