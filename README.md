@@ -1,4 +1,4 @@
-# 🏫 Smart School — Unified School Management
+# 🏫 Smart School Management System
 
 [![status](https://img.shields.io/badge/status-active-brightgreen)](README.md) [![python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/) [![flask](https://img.shields.io/badge/flask-%3E%3D1.1.2-orange)](https://flask.palletsprojects.com/) [![license](https://img.shields.io/badge/license-MIT-blueviolet)](LICENSE)
 
