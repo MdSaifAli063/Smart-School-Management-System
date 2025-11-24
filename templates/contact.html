@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact | School Management System</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body, html {
+      height: 100%;
+      scroll-behavior: smooth;
+      background: #f5f7fa;
+    }
+
+    /* Header: centered nav, better readability */
+      header {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        padding: 22px 56px;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+        gap: 16px;
+      }
+
+      /* Brand: school icon + Smart School */
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: #fff;
+        text-decoration: none;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+        justify-self: start;
+      }
+      .brand-logo {
+        width: 28px;
+        height: 28px;
+        display: inline-grid;
+        place-items: center;
+        border-radius: 6px;
+        background: linear-gradient(180deg, #22d3ee, #06b6d4);
+        box-shadow: 0 6px 18px rgba(34, 211, 238, 0.4);
+      }
+      .brand-logo svg {
+        width: 18px;
+        height: 18px;
+        display: block;
+        color: #062435;
+      }
+      .brand-name {
+        font-size: 18px;
+      }
+
+      /* Centered navbar */
+      .nav-left {
+        /* shift navbar a bit left of center */
+        justify-self: start;
+        margin-left: 344px; /* tweak this value to move more/less */
+        display: inline-flex;
+        align-items: center;
+        gap: clamp(14px, 2.8vw, 32px);
+      }
+      .nav-left a {
+        text-decoration: none;
+        color: #e8f6ff;
+        font-size: 16px;
+        font-weight: 700;
+        position: relative;
+        padding: 6px 4px;
+        transition: color 0.25s ease;
+      }
+      .nav-left a:hover {
+        color: #ffffff;
+      }
+      .nav-left a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -6px;
+        width: 0;
+        height: 3px;
+        background: linear-gradient(90deg, #22d3ee, #06b6d4);
+        transition: width 0.28s ease;
+        border-radius: 2px;
+      }
+      .nav-left a:hover::after,
+      .nav-left a.active::after {
+        width: 100%;
+      }
+
+      .nav-right {
+        justify-self: end;
+      }
+      .nav-right button {
+        padding: 10px 20px;
+        border: 1px solid #fff;
+        border-radius: 25px;
+        background: transparent;
+        color: #fff;
+        cursor: pointer;
+        font-size: 14px;
+        transition: 0.3s;
+      }
+      .nav-right button:hover {
+        background: #fff;
+        color: #316895;
+      }
+      /* User avatar / dropdown in circular badge with SVG fallback */
+      .home-user {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        position: relative;
+        font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      }
+      .home-user-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 6px 10px;
+        border-radius: 999px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.06),
+          rgba(255, 255, 255, 0.02)
+        );
+        color: #fff;
+        cursor: pointer;
+        transition: background 0.12s ease, transform 0.08s ease,
+          box-shadow 0.2s ease;
+        box-shadow: 0 6px 18px rgba(2, 6, 23, 0.45);
+      }
+      .home-user-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+      }
+      .home-avatar {
+        margin-left : 5px;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: radial-gradient(120% 120% at 20% -10%, #22d3ee, #06b6d4);
+        color: #062435;
+        font-weight: 900;
+        font-size: 15px;
+        letter-spacing: 0.5px;
+        box-shadow: 0 8px 24px rgba(2, 6, 23, 0.45);
+        flex: 0 0 40px;
+        border: 2px solid rgba(255, 255, 255, 0.18);
+        overflow: hidden;
+      }
+      .home-avatar-icon {
+        width: 25px;
+        height: 25px;
+        display: block;
+        color: #062435;
+      }
+      .home-avatar-initial {
+        display: none; /* toggled on when user available */
+        place-items: center;
+      }
+      .home-username {
+        color: #fff;
+        font-weight: 700;
+        font-size: 14px;
+        max-width: 160px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .home-user-menu {
+        position: absolute;
+        right: 0;
+        top: calc(100% + 10px);
+        min-width: 180px;
+        background: linear-gradient(
+          180deg,
+          rgba(15, 23, 42, 0.96),
+          rgba(11, 18, 32, 0.96)
+        );
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 10px;
+        box-shadow: 0 12px 36px rgba(2, 6, 23, 0.6);
+        padding: 6px;
+        display: none;
+        z-index: 220;
+      }
+      .home-user.open .home-user-menu {
+        display: block;
+      }
+      .home-user-menu button {
+        width: 100%;
+        text-align: left;
+        padding: 8px 10px;
+        border: 0;
+        background: transparent;
+        color: var(--text, #fff);
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 700;
+      }
+      .home-user-menu button:hover {
+        background: rgba(255, 255, 255, 0.06);
+        color: #e6f9ff;
+      }
+      .home-user-menu .home-signout {
+        color: #ff7b7b;
+        font-weight: 800;
+      }
+
+    /* Hero Section */
+    .contact-hero {
+      position: relative;
+      background: url('https://cdn.pixabay.com/photo/2024/08/23/11/55/building-8991569_1280.jpg') no-repeat center center/cover;
+      height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .contact-hero::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(3px);
+      z-index: 1;
+    }
+
+    .hero-text {
+      position: relative;
+      z-index: 2;
+      animation: fadeUp 1.2s ease;
+    }
+
+    .hero-text h1 {
+      font-size: 46px;
+      margin-bottom: 15px;
+    }
+
+    .hero-text p {
+      font-size: 18px;
+      color: #eee;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Contact Section */
+    .contact-section {
+      background: #fff;
+      padding: 80px 20px;
+      text-align: center;
+    }
+
+    .contact-section h2 {
+      font-size: 36px;
+      color: #316895;
+      margin-bottom: 20px;
+    }
+
+    .contact-section p {
+      max-width: 800px;
+      margin: 0 auto 50px;
+      color: #555;
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    .contact-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 40px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .contact-info {
+      flex: 1 1 300px;
+      background: #f5f7fa;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      text-align: left;
+      animation: fadeUp 1.3s ease;
+    }
+
+    .contact-info h3 {
+      color: #316895;
+      margin-bottom: 20px;
+    }
+
+    .contact-info p {
+      margin-bottom: 15px;
+      color: #444;
+    }
+
+    .contact-form {
+      flex: 1 1 500px;
+      background: #f5f7fa;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      animation: fadeUp 1.5s ease;
+    }
+
+    .contact-form form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .contact-form input,
+    .contact-form select,
+    .contact-form textarea {
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus,
+    .contact-form select:focus {
+      border-color: #316895;
+      box-shadow: 0 0 5px rgba(49, 104, 149, 0.4);
+    }
+
+    .contact-form button {
+      padding: 12px;
+      border-radius: 25px;
+      border: none;
+      background: #316895;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .contact-form button:hover {
+      background: #214e73;
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(40px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #fff;
+      font-size: 14px;
+      color: #666;
+      border-top: 1px solid #eee;
+      margin-top: 60px;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 15px 25px;
+      }
+      .hero-text h1 {
+        font-size: 34px;
+      }
+      .contact-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+    <header>
+      <!-- Brand: school icon + Smart School heading -->
+      <a href="/" class="brand" aria-label="Smart School Home">
+        <span class="brand-logo" aria-hidden="true">
+          <!-- Simple school icon -->
+          <svg
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            role="img"
+            aria-label="School"
+          >
+            <path
+              d="M12 3l9 5-9 5-9-5 9-5zm7 8.18V17a1 1 0 0 1-.553.894l-6 3a1 1 0 0 1-.894 0l-6-3A1 1 0 0 1 5 17v-5.82l6 3.333a2 2 0 0 0 1.894 0L19 11.18z"
+            />
+          </svg>
+        </span>
+        <span class="brand-name">Smart School</span>
+      </a>
+
+      <!-- Centered nav -->
+      <div class="nav-left" aria-label="Main navigation">
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+        <a href="/features">Features</a>
+        <a href="/" class="active">Contact</a>
+      </div>
+
+      <div class="nav-right">
+        <!-- User/account UI: circular avatar + dropdown -->
+        <div
+          id="home-user"
+          class="home-user"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <button
+            id="home-user-btn"
+            class="home-user-btn"
+            aria-label="Account menu"
+            aria-controls="home-user-menu"
+          >
+            <span id="home-avatar" class="home-avatar" aria-hidden="true">
+              <!-- SVG icon (default) -->
+              <svg
+                id="home-avatar-icon"
+                class="home-avatar-icon"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                role="img"
+                aria-label="User"
+              >
+                <path
+                  d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.418 0-8 2.239-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.761-3.582-5-8-5Z"
+                />
+              </svg>
+              <!-- Initial (shown when available) -->
+              <span
+                id="home-avatar-initial"
+                class="home-avatar-initial"
+                aria-hidden="true"
+              ></span>
+            </span>
+            <span id="home-username" class="home-username"></span>
+          </button>
+          <div
+            id="home-user-menu"
+            class="home-user-menu"
+            role="menu"
+            aria-hidden="true"
+          >
+            <button id="home-signin" role="menuitem">Sign in</button>
+            <button id="home-signup" role="menuitem">Sign up</button>
+            <button
+              id="home-signout"
+              class="home-signout"
+              role="menuitem"
+              style="display: none"
+            >
+              Sign out
+            </button>
+          </div>
+        </div>
+        <button
+          type="button"
+          onclick="window.location.href='/login'"
+          style="display: none"
+          id="home-login-fallback"
+        >
+          Login
+        </button>
+      </div>
+    </header>
+
+
+  <!-- Hero Section -->
+  <section class="contact-hero">
+    <div class="hero-text">
+      <h1>Get in Touch</h1>
+      <p>We’d love to hear from you. Whether you’re a school, teacher, or parent — we’re here to help you connect and grow.</p>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section class="contact-section">
+    <h2>Contact Us</h2>
+    <p>Fill out the form below or reach us through the contact details provided. We’ll respond as soon as possible.</p>
+
+    <div class="contact-container">
+      <div class="contact-info">
+        <h3>Contact Information</h3>
+        <p><strong>📍 Address:</strong> Ghousia College of Engineering ,Ramanagara,Karnataka, India</p>
+        <p><strong>📞 Phone:</strong> +91 98765 43210</p>
+        <p><strong>✉️ Email:</strong> support@schoolms.com</p>
+        <p><strong>🕒 Hours:</strong> Mon - Fri: 9:00 AM - 6:00 PM</p>
+      </div>
+
+      <div class="contact-form">
+        <form action="#" method="POST">
+          <input type="text" name="name" placeholder="Your Name" required />
+          <input type="email" name="email" placeholder="Your Email" required />
+          <select name="service" required>
+            <option value="">Select Service</option>
+            <option value="admission">Admission Support</option>
+            <option value="technical">Technical Issue</option>
+            <option value="feedback">Feedback</option>
+            <option value="other">Other</option>
+          </select>
+          <textarea name="message" rows="5" placeholder="Your Message..." required></textarea>
+          <button type="submit">Send Message</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    © 2025 School Management System. All rights reserved.
+  </footer>
+
+  <script>
+      (function () {
+        const userWrap = document.getElementById("home-user");
+        const userBtn = document.getElementById("home-user-btn");
+        const menu = document.getElementById("home-user-menu");
+        const signin = document.getElementById("home-signin");
+        const signup = document.getElementById("home-signup");
+        const signout = document.getElementById("home-signout");
+        const avatar = document.getElementById("home-avatar");
+        const avatarIcon = document.getElementById("home-avatar-icon");
+        const avatarInitial = document.getElementById("home-avatar-initial");
+        const username = document.getElementById("home-username");
+
+        function hideMenu() {
+          userWrap.classList.remove("open");
+          userWrap.setAttribute("aria-expanded", "false");
+          menu.setAttribute("aria-hidden", "true");
+        }
+        function showMenu() {
+          userWrap.classList.add("open");
+          userWrap.setAttribute("aria-expanded", "true");
+          menu.setAttribute("aria-hidden", "false");
+        }
+
+        userBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (userWrap.classList.contains("open")) hideMenu();
+          else showMenu();
+        });
+        document.addEventListener("click", () => hideMenu());
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") hideMenu();
+        });
+
+        signin.addEventListener(
+          "click",
+          () => (window.location.href = "/login")
+        );
+        signup.addEventListener(
+          "click",
+          () => (window.location.href = "/signup")
+        );
+        signout.addEventListener("click", async () => {
+          try {
+            await fetch("/api/auth/logout", {
+              method: "POST",
+              credentials: "include",
+            });
+          } catch {}
+          window.location.href = "/";
+        });
+
+        function renderAvatar(u) {
+          const initial = (
+            (u.name || u.email || "").trim().charAt(0) || ""
+          ).toUpperCase();
+          if (initial) {
+            avatarInitial.textContent = initial;
+            avatarInitial.style.display = "grid";
+            avatarIcon.style.display = "none";
+          } else {
+            avatarInitial.textContent = "";
+            avatarInitial.style.display = "none";
+            avatarIcon.style.display = "block";
+          }
+        }
+
+        // probe session and update UI
+        (async function () {
+          try {
+            const r = await fetch("/api/auth/me", { credentials: "include" });
+            if (r.ok) {
+              const data = await r.json().catch(() => ({}));
+              const u = data.user || {};
+              username.textContent = u.name || u.email || "";
+              renderAvatar(u);
+              signin.style.display = "none";
+              signup.style.display = "none";
+              signout.style.display = "";
+            } else {
+              username.textContent = "";
+              renderAvatar({});
+              signin.style.display = "";
+              signup.style.display = "";
+              signout.style.display = "none";
+            }
+          } catch (e) {
+            username.textContent = "";
+            renderAvatar({});
+          }
+        })();
+      })();
+    </script>
+
+</body>
+</html>

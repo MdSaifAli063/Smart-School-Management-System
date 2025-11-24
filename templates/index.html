@@ -1,0 +1,2944 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <title>Unified School Management</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* THEME TOKENS */
+      :root {
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.12);
+        --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.28);
+        --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.38);
+        /* responsive sidebar width: min 220px, fluid up to 280px */
+        --sidebar-width: clamp(220px, 22vw, 280px);
+        --sidebar-collapsed: 76px;
+
+        /* default dark */
+        --bg: #0b1220;
+        --bg-elev: #0f172a;
+        --card: #111827;
+        --card-2: #0b1220;
+        --line: #1f2937;
+        --muted: #9ca3af;
+        --text: #e5e7eb;
+        --text-muted: #cbd5e1;
+        --accent: #22d3ee;
+        --accent-2: #06b6d4;
+        --ok: #22c55e;
+        --warn: #f59e0b;
+        --bad: #ef4444;
+        --focus: #60a5fa;
+
+        /* density */
+        --pad-sm: 8px;
+        --pad-md: 12px;
+        --pad-lg: 16px;
+        --nav-item-h: 44px;
+      }
+      /* Light theme */
+      html[data-theme="light"] {
+        --bg: #f6f7fb;
+        --bg-elev: #ffffff;
+        --card: #ffffff;
+        --card-2: #f4f6fb;
+        --line: #e5e7eb;
+        --muted: #6b7280;
+        --text: #0f172a;
+        --text-muted: #334155;
+        --accent: #0ea5e9;
+        --accent-2: #0891b2;
+        --ok: #16a34a;
+        --warn: #d97706;
+        --bad: #dc2626;
+        --focus: #2563eb;
+      }
+
+      /* Compact density */
+      body.compact {
+        --pad-sm: 6px;
+        --pad-md: 8px;
+        --pad-lg: 12px;
+        --nav-item-h: 38px;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.001ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.001ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        background: linear-gradient(180deg, var(--bg), var(--bg-elev));
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto,
+          Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        display: flex;
+        min-height: 100vh;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        transition: background 0.3s ease, color 0.3s ease;
+      }
+
+      /* Add shared background image + aurora accents to match login/signup */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: url("https://cdn.pixabay.com/photo/2024/08/23/11/55/building-8991569_1280.jpg")
+          no-repeat center center / cover;
+        filter: blur(6px) brightness(0.55);
+        transform: scale(1.05);
+        z-index: -3;
+      }
+      body::after {
+        content: "";
+        position: fixed;
+        inset: -15% -30%;
+        background: radial-gradient(
+            40% 30% at 15% 20%,
+            rgba(34, 211, 238, 0.25),
+            transparent 60%
+          ),
+          radial-gradient(
+            35% 30% at 85% 15%,
+            rgba(6, 182, 212, 0.18),
+            transparent 60%
+          ),
+          radial-gradient(
+            30% 25% at 50% 85%,
+            rgba(125, 211, 252, 0.14),
+            transparent 60%
+          );
+        filter: blur(36px);
+        z-index: -2;
+        pointer-events: none;
+        animation: float 16s ease-in-out infinite alternate;
+      }
+      @keyframes float {
+        from {
+          transform: translateY(-6px);
+        }
+        to {
+          transform: translateY(6px);
+        }
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: var(--sidebar-width);
+        background: linear-gradient(180deg, var(--card), var(--bg));
+        border-right: 1px solid var(--line);
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+        -ms-overflow-style: none; /* IE and Edge: hide scrollbar while keeping scroll */
+        scrollbar-width: none; /* Firefox: hide scrollbar while keeping scroll */
+        z-index: 20;
+        box-shadow: var(--shadow-sm);
+        /* Animated slide / width */
+        transform: translateX(0);
+        will-change: transform, width;
+        transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1),
+          width 0.25s ease;
+      }
+      /* hide webkit scrollbar but keep scroll functionality */
+      .sidebar::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+        display: none;
+      }
+
+      body.sidebar-collapsed .sidebar {
+        width: var(--sidebar-collapsed);
+      }
+      .sidebar.collapsed {
+        transform: translateX(-100%);
+      } /* used for mobile hide */
+
+      .sidebar-header {
+        padding: 16px var(--pad-lg);
+        border-bottom: 1px solid var(--line);
+        background: linear-gradient(180deg, var(--bg), transparent);
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 8px;
+      }
+      .sidebar-header h1 {
+        margin: 0;
+        font-size: 18px;
+        color: var(--accent);
+        letter-spacing: 0.3px;
+        font-weight: 800;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      body.sidebar-collapsed .sidebar-header h1 {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      .sidebar-nav {
+        padding: 10px 8px 80px;
+        position: relative;
+      }
+      .nav-section {
+        margin-bottom: 6px;
+        border-bottom: 1px dashed
+          color-mix(in oklab, var(--line) 60%, transparent);
+      }
+      .nav-section:last-child {
+        border-bottom: 0;
+      }
+      .nav-section .section-head {
+        width: 100%;
+        background: transparent;
+        color: var(--text-muted);
+        border: none;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: background 0.18s ease, color 0.18s ease;
+      }
+      .nav-section .section-head:hover {
+        background: color-mix(in oklab, var(--line) 50%, transparent);
+        color: var(--text);
+      }
+      .nav-section .section-head i {
+        width: 18px;
+        text-align: center;
+      }
+      body.sidebar-collapsed .nav-section .section-head span.label {
+        display: none;
+      }
+
+      .nav-items {
+        overflow: hidden;
+        transition: grid-template-rows 0.25s ease, max-height 0.25s ease,
+          opacity 0.2s ease;
+        padding: 4px 0 8px;
+      }
+      .nav-section:not(.open) .nav-items {
+        max-height: 0;
+        padding: 0;
+        opacity: 0.6;
+      }
+      .nav-section.open .nav-items {
+        max-height: 1000px;
+      }
+
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        height: var(--nav-item-h);
+        padding: 0 12px;
+        color: var(--text);
+        text-decoration: none;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        transition: all 0.18s ease;
+        font-size: 14px;
+        border-radius: 10px;
+        border-left: 3px solid transparent;
+        outline: none;
+        position: relative;
+        isolation: isolate;
+      }
+      .nav-item i {
+        width: 22px;
+        text-align: center;
+        filter: saturate(1.2);
+        flex: 0 0 22px;
+      }
+      .nav-item .label {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      body.sidebar-collapsed .nav-item .label {
+        display: none;
+      }
+
+      .nav-item:hover {
+        background: color-mix(in oklab, var(--line) 60%, transparent);
+        color: var(--accent);
+        transform: translateX(2px);
+      }
+      .nav-item.active {
+        background: color-mix(in oklab, var(--accent) 15%, transparent);
+        color: var(--accent);
+        border-left-color: var(--accent);
+        box-shadow: inset 0 0 0 1px
+          color-mix(in oklab, var(--accent) 35%, transparent);
+      }
+      .nav-item:focus-visible {
+        outline: 2px solid var(--focus);
+        outline-offset: 2px;
+      }
+
+      /* Tooltip for collapsed sidebar */
+      .nav-item[data-tip]:hover::after {
+        content: attr(data-tip);
+        position: fixed;
+        left: calc(var(--sidebar-collapsed) + 12px);
+        transform: translateY(-50%);
+        top: calc(var(--nav-item-h) / 2 + var(--nav-item-top, 0px));
+        background: var(--card);
+        color: var(--text);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 6px 10px;
+        font-size: 12px;
+        z-index: 30;
+        white-space: nowrap;
+        box-shadow: var(--shadow-md);
+        display: none;
+      }
+      body.sidebar-collapsed .nav-item[data-tip]:hover::after {
+        display: block;
+      }
+
+      /* Sidebar footer with controls */
+      .sidebar-footer {
+        position: sticky;
+        bottom: 0;
+        background: linear-gradient(
+          0deg,
+          color-mix(in oklab, var(--bg) 92%, transparent),
+          transparent
+        );
+        padding: 10px;
+        border-top: 1px solid var(--line);
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 8px;
+        align-items: center;
+      }
+      .footer-actions {
+        display: inline-flex;
+        gap: 8px;
+      }
+      .ghost-btn {
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--text);
+        padding: 6px 8px;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background 0.15s ease, transform 0.08s ease;
+      }
+      .ghost-btn:hover {
+        background: color-mix(in oklab, var(--line) 50%, transparent);
+      }
+      .ghost-btn:active {
+        transform: scale(0.98);
+      }
+      .sidebar-footer .brand {
+        font-size: 12px;
+        color: var(--muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      body.sidebar-collapsed .sidebar-footer .brand {
+        display: none;
+      }
+
+      /* Backdrop for mobile sidebar and right drawer */
+      .backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 15;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+      }
+      .backdrop.show {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      /* Main container */
+      .main-container {
+        flex: 1;
+        margin-left: var(--sidebar-width);
+        transition: margin-left 0.3s ease;
+        min-width: 0;
+      }
+      body.sidebar-collapsed .main-container {
+        margin-left: var(--sidebar-collapsed);
+      }
+      .main-container.expanded {
+        margin-left: 0;
+      }
+
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: color-mix(in oklab, var(--bg) 85%, transparent);
+        backdrop-filter: blur(8px);
+        border-bottom: 1px solid var(--line);
+        padding: 12px 20px;
+      }
+      .header-content {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        align-items: center;
+        gap: 12px;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      .header-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .header-actions {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .menu-toggle {
+        display: none;
+        background: transparent;
+        border: 1px solid var(--line);
+        color: var(--text);
+        padding: 8px 10px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: background 0.15s ease, transform 0.15s ease;
+      }
+      .menu-toggle:hover {
+        background: color-mix(in oklab, var(--line) 60%, transparent);
+      }
+      .menu-toggle:active {
+        transform: scale(0.98);
+      }
+      .theme-toggle,
+      .collapse-toggle,
+      .settings-toggle {
+        background: color-mix(in oklab, var(--line) 60%, transparent);
+        border: 1px solid var(--line);
+        color: var(--text);
+        padding: 8px 10px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: background 0.15s ease, transform 0.15s ease;
+      }
+      .theme-toggle:hover,
+      .collapse-toggle:hover,
+      .settings-toggle:hover {
+        background: color-mix(in oklab, var(--accent) 12%, var(--line));
+      }
+      .theme-toggle:active,
+      .collapse-toggle:active,
+      .settings-toggle:active {
+        transform: scale(0.98);
+      }
+
+      /* Brand: school icon + Smart School (copied from home.html to match look) */
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        color: #fff;
+        text-decoration: none;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+        justify-self: start;
+      }
+      .brand-logo {
+        width: 28px;
+        height: 28px;
+        display: inline-grid;
+        place-items: center;
+        border-radius: 6px;
+        background: linear-gradient(180deg, #22d3ee, #06b6d4);
+        box-shadow: 0 6px 18px rgba(34, 211, 238, 0.4);
+      }
+      .brand-logo svg {
+        width: 18px;
+        height: 18px;
+        display: block;
+        color: #062435;
+      }
+      .brand-name {
+        font-size: 18px;
+      }
+
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 16px 20px;
+      }
+      h1 {
+        margin: 2px 0 6px;
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+      }
+      h2 {
+        margin: 0 0 12px;
+        font-size: 18px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+      }
+      h3,
+      h4 {
+        margin: 12px 0 8px;
+      }
+      main {
+        padding: 20px 0;
+      }
+
+      /* Cards and layout */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(12, 1fr);
+        gap: 16px;
+      }
+      .card {
+        grid-column: span 12;
+        background: linear-gradient(180deg, var(--card), var(--card-2));
+        border: 1px solid var(--line);
+        border-radius: var(--radius-lg);
+        padding: 16px;
+        box-shadow: var(--shadow-md);
+        transition: transform 0.15s ease, box-shadow 0.2s ease,
+          border-color 0.2s ease;
+      }
+      body.compact .card {
+        padding: 12px;
+      }
+      .card:hover {
+        box-shadow: var(--shadow-lg);
+        border-color: color-mix(in oklab, var(--accent) 25%, var(--line));
+      }
+      @media (min-width: 900px) {
+        .half {
+          grid-column: span 6;
+        }
+        .third {
+          grid-column: span 4;
+        }
+        .two-third {
+          grid-column: span 8;
+        }
+        .quarter {
+          grid-column: span 3;
+        }
+      }
+
+      /* Add spacing between stacked cards/forms in a section */
+      #content .card + .card {
+        margin-top: 14px;
+      }
+      /* also apply when cards are direct children of .wrap */
+      .wrap > .card + .card {
+        margin-top: 14px;
+      }
+
+      /* Form elements */
+      label {
+        display: block;
+        margin: 12px 0 6px;
+        color: var(--text-muted);
+        font-size: 13px;
+        font-weight: 600;
+      }
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        background: var(--bg);
+        color: var(--text);
+        outline: none;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease,
+          background 0.2s ease;
+      }
+      body.compact input,
+      body.compact select,
+      body.compact textarea {
+        padding: 8px 10px;
+      }
+      input::placeholder,
+      textarea::placeholder {
+        color: color-mix(in oklab, var(--muted) 70%, transparent);
+      }
+      textarea {
+        min-height: 72px;
+        resize: vertical;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: color-mix(in oklab, var(--accent) 40%, var(--line));
+        box-shadow: 0 0 0 3px
+          color-mix(in oklab, var(--accent) 24%, transparent);
+      }
+
+      /* Buttons */
+      button {
+        padding: 10px 14px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(180deg, var(--accent), var(--accent-2));
+        color: #062435;
+        font-weight: 800;
+        cursor: pointer;
+        transition: transform 0.08s ease, filter 0.15s ease,
+          box-shadow 0.15s ease, background 0.2s ease;
+        box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+      }
+      body.compact button {
+        padding: 8px 12px;
+      }
+      button:hover {
+        filter: brightness(1.05);
+        box-shadow: 0 6px 18px
+          color-mix(in oklab, var(--accent) 25%, transparent);
+      }
+      button:active {
+        transform: translateY(1px) scale(0.99);
+      }
+      button.secondary {
+        background: color-mix(in oklab, var(--line) 60%, transparent);
+        color: var(--text);
+        border: 1px solid var(--line);
+        box-shadow: none;
+      }
+      button.secondary:hover {
+        background: color-mix(in oklab, var(--accent) 10%, var(--line));
+      }
+      button.danger {
+        background: linear-gradient(
+          180deg,
+          var(--bad),
+          color-mix(in oklab, var(--bad) 75%, black)
+        );
+        color: #fff;
+      }
+
+      .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .input-inline {
+        min-width: 220px;
+      }
+
+      /* Tables */
+      .card {
+        overflow: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-top: 10px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+        background: color-mix(in oklab, var(--card) 92%, transparent);
+      }
+      th,
+      td {
+        border-bottom: 1px solid var(--line);
+        padding: 10px 12px;
+        text-align: left;
+        vertical-align: top;
+        font-size: 14px;
+      }
+      th {
+        background: color-mix(in oklab, var(--line) 70%, transparent);
+        color: var(--text);
+        position: sticky;
+        top: 0;
+        z-index: 1;
+      }
+      tr:last-child td {
+        border-bottom: 0;
+      }
+      tbody tr:nth-child(even) {
+        background: color-mix(in oklab, var(--line) 40%, transparent);
+      }
+      tbody tr:hover {
+        background: color-mix(in oklab, var(--accent) 8%, transparent);
+      }
+
+      /* Pills and hints */
+      .pill {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        border: 1px solid color-mix(in oklab, var(--muted) 40%, transparent);
+        background: color-mix(in oklab, var(--line) 40%, transparent);
+        color: var(--text);
+        vertical-align: middle;
+      }
+      .ok {
+        background: color-mix(in oklab, var(--ok) 20%, transparent);
+        color: color-mix(in oklab, var(--ok) 85%, white);
+        border-color: color-mix(in oklab, var(--ok) 45%, transparent);
+      }
+      .bad {
+        background: color-mix(in oklab, var(--bad) 20%, transparent);
+        color: color-mix(in oklab, var(--bad) 85%, white);
+        border-color: color-mix(in oklab, var(--bad) 45%, transparent);
+      }
+      .muted {
+        color: var(--muted);
+      }
+      .hint {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 6px;
+      }
+
+      /* Notification highlight on card (notify()) */
+      .success {
+        border-color: color-mix(in oklab, var(--ok) 45%, transparent);
+        box-shadow: 0 0 0 3px color-mix(in oklab, var(--ok) 24%, transparent)
+          inset;
+      }
+      .error {
+        border-color: color-mix(in oklab, var(--bad) 45%, transparent);
+        box-shadow: 0 0 0 3px color-mix(in oklab, var(--bad) 24%, transparent)
+          inset;
+      }
+
+      .flex-end {
+        display: flex;
+        justify-content: flex-end;
+      }
+      .actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .kbd {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+        background: var(--bg);
+        padding: 2px 6px;
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        color: var(--text-muted);
+      }
+      .pre {
+        white-space: pre-wrap;
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 12px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+          "Liberation Mono", "Courier New", monospace;
+      }
+
+      /* Right settings drawer */
+      .drawer {
+        position: fixed;
+        right: 0;
+        top: 0;
+        height: 100vh;
+        width: min(380px, 92vw);
+        background: linear-gradient(180deg, var(--card), var(--bg));
+        border-left: 1px solid var(--line);
+        box-shadow: var(--shadow-lg);
+        z-index: 40;
+        transform: translateX(100%);
+        transition: transform 0.35s cubic-bezier(0.22, 0.61, 0.36, 1);
+        display: flex;
+        flex-direction: column;
+      }
+      .drawer.open {
+        transform: translateX(0);
+      }
+      .drawer header {
+        padding: 14px;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .drawer .content {
+        padding: 14px;
+        overflow-y: auto;
+        display: grid;
+        gap: 12px;
+      }
+      .swatches {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8px;
+      }
+      .swatch {
+        height: 32px;
+        border-radius: 8px;
+        border: 1px solid var(--line);
+        cursor: pointer;
+        transition: transform 0.08s ease, box-shadow 0.12s ease;
+      }
+      .swatch:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
+      }
+
+      /* Mobile Responsive */
+      @media (max-width: 768px) {
+        .sidebar {
+          transform: translateX(-100%);
+        }
+        .sidebar.open {
+          transform: translateX(0);
+        }
+        .main-container {
+          margin-left: 0;
+        }
+        .menu-toggle {
+          display: inline-flex;
+        }
+        .wrap {
+          padding: 16px;
+        }
+        .header-content {
+          grid-template-columns: auto 1fr auto;
+        }
+        body.sidebar-collapsed .main-container {
+          margin-left: 0;
+        } /* collapse ignored on mobile layout */
+        .header-actions .user-name {
+          display: none;
+        }
+      }
+
+      /* Toasts */
+      .toasts {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        z-index: 50;
+        pointer-events: none;
+      }
+      .toast {
+        pointer-events: auto;
+        min-width: 240px;
+        max-width: 420px;
+        background: var(--card);
+        color: var(--text);
+        border: 1px solid var(--line);
+        border-left: 4px solid var(--accent);
+        padding: 10px 12px;
+        border-radius: 12px;
+        box-shadow: var(--shadow-md);
+        animation: toast-in 0.18s ease both;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+      }
+      .toast.ok {
+        border-left-color: var(--ok);
+      }
+      .toast.err {
+        border-left-color: var(--bad);
+      }
+      .toast .close {
+        background: transparent;
+        border: none;
+        color: var(--muted);
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 8px;
+      }
+      .toast .close:hover {
+        color: var(--text);
+      }
+      @keyframes toast-in {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Accessibility helpers */
+      .visually-hidden {
+        position: absolute !important;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        border: 0;
+      }
+
+      /* User/Account UI */
+      .user-wrap {
+        position: relative;
+      }
+      .user-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: color-mix(in oklab, var(--line) 60%, transparent);
+        border: 1px solid var(--line);
+        color: var(--text);
+        padding: 6px 8px;
+        border-radius: 999px;
+        cursor: pointer;
+        transition: background 0.15s ease, transform 0.15s ease;
+      }
+      .user-btn:hover {
+        background: color-mix(in oklab, var(--accent) 12%, var(--line));
+      }
+      .avatar {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: color-mix(in oklab, var(--line) 60%, transparent);
+        border: 1px solid var(--line);
+        font-size: 16px;
+        user-select: none;
+      }
+      .avatar.sm {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+      }
+      .user-name {
+        font-size: 13px;
+        max-width: 140px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: var(--text);
+      }
+      .user-menu {
+        position: absolute;
+        right: 0;
+        top: calc(100% + 8px);
+        min-width: 220px;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        box-shadow: var(--shadow-lg);
+        padding: 8px;
+        z-index: 35;
+        display: none;
+      }
+      .user-menu.open {
+        display: block;
+      }
+      .user-menu-header {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 8px;
+        align-items: center;
+        padding: 8px;
+        border-radius: 10px;
+        background: color-mix(in oklab, var(--line) 40%, transparent);
+        margin-bottom: 6px;
+      }
+      .menu-item {
+        width: 100%;
+        text-align: left;
+        background: transparent;
+        color: var(--text);
+        border: 1px solid transparent;
+        padding: 8px 10px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .menu-item:hover {
+        background: color-mix(in oklab, var(--line) 60%, transparent);
+      }
+      .menu-item.danger {
+        color: #fff;
+        background: linear-gradient(
+          180deg,
+          var(--bad),
+          color-mix(in oklab, var(--bad) 75%, black)
+        );
+        border: none;
+      }
+      .menu-item.danger:hover {
+        filter: brightness(1.03);
+      }
+
+      /* Modal (Login) */
+      .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 45;
+        padding: 16px;
+      }
+      .modal.show {
+        display: flex;
+      }
+      .modal .dialog {
+        width: min(460px, 96vw);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar" aria-label="Primary">
+      <div class="sidebar-header">
+        <!-- Add a small badge so the sidebar visually matches other pages -->
+        <div style="display: flex; align-items: center; gap: 8px">
+          <a href="/" class="brand" aria-label="Smart School Home">
+            <span class="brand-logo" aria-hidden="true">
+              <!-- Simple school icon -->
+              <svg
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                role="img"
+                aria-label="School"
+              >
+                <path
+                  d="M12 3l9 5-9 5-9-5 9-5zm7 8.18V17a1 1 0 0 1-.553.894l-6 3a1 1 0 0 1-.894 0l-6-3A1 1 0 0 1 5 17v-5.82l6 3.333a2 2 0 0 0 1.894 0L19 11.18z"
+                />
+              </svg>
+            </span>
+            <span class="brand-name" style="color: skyblue">Smart School</span>
+          </a>
+        </div>
+        <div class="footer-actions">
+          <button
+            class="ghost-btn"
+            id="collapse-pin"
+            aria-label="Collapse sidebar"
+            title="Collapse sidebar"
+          >
+            ⫷
+          </button>
+        </div>
+      </div>
+      <div class="sidebar-nav" id="sidebar-nav">
+        <!-- Navigation sections populated by JavaScript -->
+      </div>
+      <div class="sidebar-footer">
+        <div class="brand">Unified School Management</div>
+        <div class="footer-actions">
+          <button class="ghost-btn" id="open-settings" title="Settings">
+            ⚙️
+          </button>
+          <button class="ghost-btn" id="toggle-theme" title="Toggle theme">
+            🌙
+          </button>
+        </div>
+      </div>
+    </nav>
+    <div class="backdrop" id="backdrop" aria-hidden="true"></div>
+
+    <!-- Main Content -->
+    <div class="main-container" id="main-container">
+      <header>
+        <div class="header-content">
+          <div class="header-title">
+            <button class="menu-toggle" id="menu-toggle" aria-label="Open menu">
+              ☰
+            </button>
+
+            <h1 id="page-title">Students</h1>
+          </div>
+          <div></div>
+          <div class="header-actions">
+            <!-- Back to public landing page (use server root) -->
+            <a
+              class="ghost-btn"
+              href="/"
+              title="Back to public home"
+              aria-label="Back to Home"
+              >🏠 Home</a
+            >
+            <button
+              class="collapse-toggle"
+              id="collapse-toggle"
+              aria-label="Collapse sidebar"
+              title="Collapse sidebar"
+            >
+              ⫷
+            </button>
+            <button
+              class="theme-toggle"
+              id="theme-toggle"
+              aria-label="Toggle theme"
+              title="Toggle theme"
+            >
+              🌙
+            </button>
+            <button
+              class="settings-toggle"
+              id="settings-toggle"
+              aria-label="Open settings"
+              title="Open settings"
+            >
+              ⚙️
+            </button>
+
+            <!-- User/Account -->
+            <div class="user-wrap" id="user-wrap">
+              <button
+                class="user-btn"
+                id="user-btn"
+                aria-haspopup="true"
+                aria-expanded="false"
+                title="Account"
+              >
+                <span class="avatar" id="avatar">👤</span>
+                <span class="user-name" id="user-name"></span>
+              </button>
+              <div
+                class="user-menu"
+                id="user-menu"
+                role="menu"
+                aria-hidden="true"
+              >
+                <div class="user-menu-header" id="user-menu-header">
+                  <span class="avatar sm" id="avatar-sm">👤</span>
+                  <div>
+                    <div id="um-name">Guest</div>
+                    <div class="muted" id="um-email">Not signed in</div>
+                  </div>
+                </div>
+                <button class="menu-item" id="signin-action" role="menuitem">
+                  Sign in
+                </button>
+                <button
+                  class="menu-item"
+                  id="copy-token-action"
+                  role="menuitem"
+                >
+                  Copy API token
+                </button>
+                <button
+                  class="menu-item danger"
+                  id="signout-action"
+                  role="menuitem"
+                >
+                  Sign out
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="wrap">
+        <section id="content"></section>
+      </main>
+    </div>
+
+    <!-- Toasts (already present below in file) -->
+    <div class="toasts" id="toasts" aria-live="polite" aria-atomic="true"></div>
+
+    <!-- Right settings drawer -->
+    <aside
+      class="drawer"
+      id="settings-drawer"
+      aria-hidden="true"
+      aria-label="Quick settings"
+    >
+      <header>
+        <strong>Quick Settings</strong>
+        <button
+          class="ghost-btn"
+          id="close-settings"
+          aria-label="Close settings"
+        >
+          ✕
+        </button>
+      </header>
+      <div class="content">
+        <div class="card">
+          <h3>Theme</h3>
+          <div class="row">
+            <button class="secondary" id="drawer-theme">
+              Toggle Light/Dark
+            </button>
+          </div>
+          <div class="hint">Theme is remembered per device.</div>
+        </div>
+
+        <div class="card">
+          <h3>Accent Color</h3>
+          <div
+            class="swatches"
+            id="accent-swatches"
+            aria-label="Accent colors"
+          ></div>
+          <div class="hint">Pick a highlight color you like.</div>
+        </div>
+
+        <div class="card">
+          <h3>Density</h3>
+          <div class="row">
+            <button class="secondary" id="density-normal">Comfortable</button>
+            <button class="secondary" id="density-compact">Compact</button>
+          </div>
+          <div class="hint">Compact mode tightens paddings for dense data.</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Login Modal -->
+    <div
+      class="modal"
+      id="login-modal"
+      aria-hidden="true"
+      role="dialog"
+      aria-labelledby="login-title"
+    >
+      <div class="dialog card">
+        <h2 id="login-title">Sign in</h2>
+        <div class="row">
+          <input
+            id="login-username"
+            placeholder="Email or Username"
+            autocomplete="username"
+          />
+          <input
+            id="login-password"
+            type="password"
+            placeholder="Password"
+            autocomplete="current-password"
+          />
+        </div>
+        <div class="row" style="justify-content: flex-end; margin-top: 8px">
+          <button class="secondary" id="login-cancel">Cancel</button>
+          <button id="login-submit">Sign in</button>
+        </div>
+        <div class="hint" id="login-hint">
+          Use your administrator or teacher account to access data.
+        </div>
+      </div>
+    </div>
+    <script>
+      // Relative API base so the app works when served by Flask
+      const API_BASE = "";
+
+      // Tabs grouped into sections
+      const NAV_SECTIONS = [
+        {
+          id: "academics",
+          icon: "🎓",
+          title: "Academics",
+          items: [
+            { id: "students", label: "Students", icon: "👥" },
+            { id: "timetable", label: "Timetable", icon: "📅" },
+            { id: "attendance", label: "Attendance", icon: "✓" },
+            { id: "homework", label: "Homework & Diary", icon: "📝" },
+          ],
+        },
+        {
+          id: "daily",
+          icon: "📌",
+          title: "Daily",
+          items: [
+            { id: "reports", label: "Lunch & Daily Activities", icon: "🍱" },
+            { id: "behavior", label: "Behavior", icon: "⭐" },
+            { id: "messages", label: "Messages", icon: "📧" },
+          ],
+        },
+        {
+          id: "system",
+          icon: "🗂️",
+          title: "System",
+          items: [{ id: "data", label: "Data Viewer / Reset", icon: "🗂️" }],
+        },
+      ];
+
+      const $ = (sel, el = document) => el.querySelector(sel);
+      const $$ = (sel, el = document) => [...el.querySelectorAll(sel)];
+      const div = (cls) =>
+        Object.assign(document.createElement("div"), { className: cls || "" });
+      const el = (tag, props = {}) =>
+        Object.assign(document.createElement(tag), props);
+
+      /* Toasts */
+      function showToast(msg, type = "ok", duration = 2400) {
+        const wrap = $("#toasts");
+        const t = div("toast " + (type === "ok" ? "ok" : "err"));
+        t.innerHTML = `<span>${msg}</span><button class="close" aria-label="Dismiss">✕</button>`;
+        const close = () => {
+          if (!t) return;
+          t.style.opacity = "0";
+          t.style.transform = "translateY(6px)";
+          setTimeout(() => t.remove(), 180);
+        };
+        t.querySelector(".close").onclick = close;
+        wrap.appendChild(t);
+        setTimeout(close, duration);
+      }
+
+      function notify(node, ok = true, message = null) {
+        node.classList.remove("success", "error");
+        node.classList.add(ok ? "success" : "error");
+        setTimeout(() => node.classList.remove("success", "error"), 1600);
+        const msg = message ?? (ok ? "Saved successfully" : "Action failed");
+        showToast(msg, ok ? "ok" : "err");
+      }
+
+      function capitalize(s) {
+        return (s || "").trim().replace(/^./, (c) => c.toUpperCase());
+      }
+
+      function copyToClipboard(text) {
+        try {
+          navigator.clipboard.writeText(text);
+          return true;
+        } catch (e) {
+          const ta = el("textarea", {
+            style: "position:fixed;left:-9999px",
+            value: text,
+          });
+          document.body.appendChild(ta);
+          ta.select();
+          const ok = document.execCommand("copy");
+          document.body.removeChild(ta);
+          return ok;
+        }
+      }
+
+      /* Theme + Accent + Density */
+      const THEME_KEY = "usm-theme";
+      const SIDEBAR_KEY = "usm-sidebar";
+      const ACCENT_KEY = "usm-accent";
+      const DENSITY_KEY = "usm-density";
+
+      function getPreferredTheme() {
+        const saved = localStorage.getItem(THEME_KEY);
+        if (saved === "dark" || saved === "light") return saved;
+        return window.matchMedia &&
+          window.matchMedia("(prefers-color-scheme: light)").matches
+          ? "light"
+          : "dark";
+      }
+      function applyTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem(THEME_KEY, theme);
+        const btn = $("#theme-toggle");
+        const tbtn = $("#toggle-theme");
+        const dbtn = $("#drawer-theme");
+        [btn, tbtn, dbtn]
+          .filter(Boolean)
+          .forEach((b) => (b.textContent = theme === "light" ? "🌞" : "🌙"));
+      }
+      function applyDensity(d) {
+        document.body.classList.toggle("compact", d === "compact");
+        localStorage.setItem(DENSITY_KEY, d);
+      }
+      function applyAccent(hexMain, hexDeep) {
+        document.documentElement.style.setProperty("--accent", hexMain);
+        document.documentElement.style.setProperty("--accent-2", hexDeep);
+        localStorage.setItem(
+          ACCENT_KEY,
+          JSON.stringify({ main: hexMain, deep: hexDeep })
+        );
+      }
+
+      // Initialize theme/density/accent
+      applyTheme(getPreferredTheme());
+      const savedDensity = localStorage.getItem(DENSITY_KEY) || "normal";
+      applyDensity(savedDensity);
+      const savedAccent = localStorage.getItem(ACCENT_KEY);
+      if (savedAccent) {
+        try {
+          const a = JSON.parse(savedAccent);
+          if (a?.main && a?.deep) applyAccent(a.main, a.deep);
+        } catch {}
+      }
+
+      // Theme toggles
+      $("#theme-toggle").onclick = () =>
+        applyTheme(
+          (document.documentElement.getAttribute("data-theme") || "dark") ===
+            "dark"
+            ? "light"
+            : "dark"
+        );
+      $("#toggle-theme").onclick = () => $("#theme-toggle").click();
+      $("#drawer-theme").onclick = () => $("#theme-toggle").click();
+
+      // Density toggles
+      $("#density-normal").onclick = () => applyDensity("normal");
+      $("#density-compact").onclick = () => applyDensity("compact");
+
+      // Accent swatches
+      const SWATCHES = [
+        ["#22d3ee", "#06b6d4"], // cyan
+        ["#a78bfa", "#7c3aed"], // violet
+        ["#f59e0b", "#d97706"], // amber
+        ["#34d399", "#059669"], // emerald
+        ["#f472b6", "#db2777"], // pink
+        ["#60a5fa", "#2563eb"], // blue
+      ];
+      const swWrap = $("#accent-swatches");
+      SWATCHES.forEach(([m, d]) => {
+        const s = div("swatch");
+        s.style.background = `linear-gradient(180deg, ${m}, ${d})`;
+        s.title = `Accent ${m}`;
+        s.onclick = () => applyAccent(m, d);
+        swWrap.appendChild(s);
+      });
+
+      /* Sidebar build */
+      function buildSidebar() {
+        const nav = $("#sidebar-nav");
+        nav.innerHTML = "";
+        NAV_SECTIONS.forEach((sec, idx) => {
+          const section = div("nav-section open");
+          const head = el("button", {
+            className: "section-head",
+            innerHTML: `<i>${sec.icon}</i><span class="label">${sec.title}</span>`,
+            "aria-expanded": "true",
+          });
+          head.onclick = () => {
+            const open = section.classList.toggle("open");
+            head.setAttribute("aria-expanded", open ? "true" : "false");
+          };
+          const itemsWrap = div("nav-items");
+          sec.items.forEach((t) => {
+            const item = el("button", {
+              className: "nav-item",
+              innerHTML: `<i>${t.icon}</i><span class="label">${t.label}</span>`,
+              "data-tip": t.label,
+            });
+            // position for tooltip
+            item.addEventListener("mousemove", (e) =>
+              item.style.setProperty(
+                "--nav-item-top",
+                item.getBoundingClientRect().top - 0 + "px"
+              )
+            );
+            item.onclick = () => render(t.id, item, t.label);
+            itemsWrap.appendChild(item);
+          });
+          section.append(head, itemsWrap);
+          nav.appendChild(section);
+        });
+        // default view
+        const firstItem = nav.querySelector(".nav-item");
+        if (firstItem) render("students", firstItem, "Students");
+      }
+
+      // Sidebar collapse/expand state
+      function setSidebarCollapsed(collapsed) {
+        document.body.classList.toggle("sidebar-collapsed", collapsed);
+        localStorage.setItem(SIDEBAR_KEY, collapsed ? "collapsed" : "expanded");
+        // Update toggles text
+        const collapsedNow =
+          document.body.classList.contains("sidebar-collapsed");
+        const c1 = $("#collapse-toggle");
+        const c2 = $("#collapse-pin");
+        if (c1) {
+          c1.textContent = collapsedNow ? "⫸" : "⫷";
+          c1.title = collapsedNow ? "Expand sidebar" : "Collapse sidebar";
+        }
+        if (c2) {
+          c2.textContent = collapsedNow ? "⫸" : "⫷";
+          c2.title = collapsedNow ? "Expand sidebar" : "Collapse sidebar";
+        }
+      }
+
+      // Init collapsed state from storage
+      setSidebarCollapsed(
+        (localStorage.getItem(SIDEBAR_KEY) || "expanded") === "collapsed"
+      );
+
+      // Mobile menu toggle + backdrop
+      const sidebar = $("#sidebar");
+      const backdrop = $("#backdrop");
+
+      $("#menu-toggle").onclick = () => {
+        sidebar.classList.toggle("open");
+        backdrop.classList.toggle("show", sidebar.classList.contains("open"));
+      };
+      backdrop.onclick = () => {
+        sidebar.classList.remove("open");
+        $("#settings-drawer").classList.remove("open");
+        backdrop.classList.remove("show");
+      };
+      document.addEventListener("click", (e) => {
+        if (window.innerWidth <= 768) {
+          const menuToggle = $("#menu-toggle");
+          if (
+            !sidebar.contains(e.target) &&
+            !menuToggle.contains(e.target) &&
+            !backdrop.contains(e.target)
+          ) {
+            sidebar.classList.remove("open");
+            backdrop.classList.remove("show");
+          }
+        }
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          sidebar.classList.remove("open");
+          $("#settings-drawer").classList.remove("open");
+          backdrop.classList.remove("show");
+        }
+      });
+
+      // Collapse toggles (desktop style)
+      $("#collapse-toggle").onclick = () =>
+        setSidebarCollapsed(
+          !document.body.classList.contains("sidebar-collapsed")
+        );
+      $("#collapse-pin").onclick = () => $("#collapse-toggle").click();
+
+      // Settings drawer
+      const drawer = $("#settings-drawer");
+      function openSettings(open = true) {
+        drawer.classList.toggle("open", open);
+        backdrop.classList.toggle("show", open);
+        drawer.setAttribute("aria-hidden", open ? "false" : "true");
+      }
+      $("#settings-toggle").onclick = () => openSettings(true);
+      $("#open-settings").onclick = () => openSettings(true);
+      $("#close-settings").onclick = () => openSettings(false);
+
+      buildSidebar();
+
+      async function api(path, method = "GET", data = null) {
+        const opts = { method };
+        if (method !== "GET" && data != null) {
+          opts.headers = { "Content-Type": "application/json" };
+          opts.body = JSON.stringify(data);
+        }
+        const res = await fetch(API_BASE + path, opts);
+        const text = await res.text();
+        let json = {};
+        try {
+          json = text ? JSON.parse(text) : {};
+        } catch {
+          json = { raw: text };
+        }
+        if (!res.ok) throw { status: res.status, data: json };
+        return json;
+      }
+
+      function render(tabId, btn, title) {
+        $$(".nav-item").forEach((c) => c.classList.remove("active"));
+        btn.classList.add("active");
+        $("#page-title").textContent = title;
+
+        // Close sidebar on mobile after selection
+        if (window.innerWidth <= 768) {
+          sidebar.classList.remove("open");
+          backdrop.classList.remove("show");
+        }
+
+        const C = $("#content");
+        C.innerHTML = "";
+        ({
+          students: renderStudents,
+          timetable: renderTimetable,
+          attendance: renderAttendance,
+          homework: renderHomework,
+          reports: renderReports,
+          behavior: renderBehavior,
+          messages: renderMessages,
+          data: renderData,
+        })[tabId](C);
+      }
+
+      /* ---------- Utility: load students + build datalist ---------- */
+      async function getAllStudents() {
+        try {
+          return await api("/students");
+        } catch {
+          return {};
+        }
+      }
+      async function ensureRollDatalist(inputEl) {
+        let dl = document.getElementById("rolls_datalist");
+        if (!dl) {
+          dl = el("datalist", { id: "rolls_datalist" });
+          document.body.appendChild(dl);
+        }
+        const data = await getAllStudents();
+        dl.innerHTML = "";
+        Object.keys(data).forEach((r) => {
+          const opt = el("option", {
+            value: r,
+            label: `${data[r].Name || ""} (Grade ${data[r].Grade || ""})`,
+          });
+          dl.appendChild(opt);
+        });
+        if (inputEl) inputEl.setAttribute("list", "rolls_datalist");
+      }
+
+      /* ---------- Students ---------- */
+      function renderStudents(C) {
+        const card = div("card");
+        card.innerHTML = `
+    <h2>Add Student</h2>
+    <div class="grid">
+      <div class="half">
+        <label>Roll No</label><input id="s_roll" />
+        <label>Name</label><input id="s_name" />
+        <label>Age</label><input id="s_age" type="number" />
+        <label>Grade</label><input id="s_grade" />
+        <label>Gender</label><input id="s_gender" />
+      </div>
+      <div class="half">
+        <label>Father's Name</label><input id="s_fn" />
+        <label>Mother's Name</label><input id="s_mn" />
+        <label>Blood Group</label><input id="s_bg" />
+        <label>Address</label><textarea id="s_addr"></textarea>
+        <div class="row">
+          <input id="s_parent_email" class="input-inline" type="email" placeholder="Parent Email (optional)">
+          <input id="s_father_email" class="input-inline" type="email" placeholder="Father Email (optional)">
+          <input id="s_mother_email" class="input-inline" type="email" placeholder="Mother Email (optional)">
+        </div>
+        <div class="flex-end"><button id="s_add">Add Student</button></div>
+        <div class="hint">Adds student and creates an empty diary. Optional: parent emails help with notifications.</div>
+      </div>
+    </div>
+  `;
+        C.appendChild(card);
+
+        const emailsMgr = div("card");
+        emailsMgr.innerHTML = `
+    <h2>Manage Parent Emails</h2>
+    <div class="row">
+      <input id="pc_roll" placeholder="Roll No" class="input-inline">
+      <input id="pc_emails" placeholder="Emails (comma separated)" class="two-third">
+      <button id="pc_save">Save Emails</button>
+    </div>
+    <div class="hint">Saves to students/&lt;roll&gt;/contacts. Tip: use multiple emails separated by commas.</div>
+  `;
+        C.appendChild(emailsMgr);
+
+        const list = div("card");
+        list.innerHTML = `<h2>All Students</h2><div id="s_table" class="muted">No data</div>`;
+        C.appendChild(list);
+
+        async function refresh() {
+          try {
+            const data = await api("/students");
+            const keys = Object.keys(data);
+            if (!keys.length) {
+              $("#s_table", list).innerHTML =
+                "<i class='muted'>No students yet</i>";
+              return;
+            }
+            const tbl = [
+              "<table><thead><tr><th>Roll</th><th>Name</th><th>Grade</th><th>Gender</th><th>Blood</th><th>Address</th><th>Parent Emails</th></tr></thead><tbody>",
+            ];
+            keys.forEach((r) => {
+              const s = data[r];
+              const emails = (s.ParentEmails || []).join(", ");
+              tbl.push(
+                `<tr><td>${r}</td><td>${s.Name || ""}</td><td>${
+                  s.Grade || ""
+                }</td><td>${s.Gender || ""}</td><td>${
+                  s.Blood_group || ""
+                }</td><td>${s.Address || ""}</td><td>${
+                  emails || "<span class='muted'>—</span>"
+                }</td></tr>`
+              );
+            });
+            tbl.push("</tbody></table>");
+            $("#s_table", list).innerHTML = tbl.join("");
+          } catch (e) {
+            $("#s_table", list).innerHTML = `<span class="pill bad">Error ${
+              e.status || ""
+            }</span>`;
+          }
+        }
+        refresh();
+
+        $("#s_add", card).onclick = async () => {
+          const payload = {
+            roll_no: $("#s_roll").value.trim(),
+            name: $("#s_name").value.trim(),
+            age: $("#s_age").value.trim(),
+            grade: $("#s_grade").value.trim(),
+            gender: $("#s_gender").value.trim(),
+            fathers_name: $("#s_fn").value.trim(),
+            mothers_name: $("#s_mn").value.trim(),
+            blood_group: $("#s_bg").value.trim(),
+            address: $("#s_addr").value.trim(),
+          };
+          const p1 = $("#s_parent_email").value.trim();
+          const p2 = $("#s_father_email").value.trim();
+          const p3 = $("#s_mother_email").value.trim();
+          if (p1) payload.parent_email = p1;
+          if (p2) payload.father_email = p2;
+          if (p3) payload.mother_email = p3;
+
+          try {
+            await api("/students", "POST", payload);
+            notify(card, true);
+            refresh();
+            [
+              "s_roll",
+              "s_name",
+              "s_age",
+              "s_grade",
+              "s_gender",
+              "s_fn",
+              "s_mn",
+              "s_bg",
+              "s_addr",
+              "s_parent_email",
+              "s_father_email",
+              "s_mother_email",
+            ].forEach((id) => {
+              $("#" + id).value = "";
+            });
+          } catch (e) {
+            alert(e.data?.error || "Failed");
+            notify(card, false);
+          }
+        };
+
+        $("#pc_save", emailsMgr).onclick = async () => {
+          const r = $("#pc_roll", emailsMgr).value.trim();
+          const ems = $("#pc_emails", emailsMgr)
+            .value.split(",")
+            .map((x) => x.trim())
+            .filter(Boolean);
+          if (!r || !ems.length)
+            return alert("Enter roll and at least one email");
+          try {
+            await api(`/students/${encodeURIComponent(r)}/contacts`, "POST", {
+              parent_emails: ems,
+            });
+            notify(emailsMgr, true);
+            refresh();
+          } catch (e) {
+            alert(e.data?.error || "Failed");
+            notify(emailsMgr, false);
+          }
+        };
+
+        ensureRollDatalist($("#pc_roll", emailsMgr));
+      }
+
+      /* ---------- Timetable ---------- */
+      function renderTimetable(C) {
+        const add = div("card");
+        add.innerHTML = `
+    <h2>Set Timetable (locks once saved)</h2>
+    <div class="grid">
+      <div class="third"><label>Grade</label><input id="tt_grade"></div>
+      <div class="third"><label>Day</label><input id="tt_day" placeholder="Monday"></div>
+      <div class="third"><label>Periods</label>
+        <div class="hint">Add each period with time, subject, teacher, room. Breaks auto-added.</div>
+      </div>
+    </div>
+    <div id="periods"></div>
+    <div class="row" style="margin-top:8px;">
+      <button id="add_p" class="secondary">+ Add Period</button>
+      <button id="save_tt">Save Timetable</button>
+    </div>
+  `;
+        const list = div("card");
+        list.innerHTML = `
+    <h2>View Timetable</h2>
+    <div class="row">
+      <input id="v_grade" placeholder="Grade">
+      <input id="v_day" placeholder="(optional) Day">
+      <button id="v_go" class="secondary">View</button>
+    </div>
+    <div id="tt_view" style="margin-top:10px" class="muted">No data</div>
+  `;
+        C.append(add, list);
+
+        const periods = $("#periods", add);
+        function addPeriodRow(
+          p = { time: "", subject: "", teacher: "", room: "" }
+        ) {
+          const row = div("row");
+          row.innerHTML = `
+      <input placeholder="Time e.g. 9:00 - 9:45" value="${p.time || ""}">
+      <input placeholder="Subject" value="${p.subject || ""}">
+      <input placeholder="Teacher" value="${p.teacher || ""}">
+      <input placeholder="Room" value="${p.room || ""}">
+      <button class="secondary">Remove</button>
+    `;
+          row.lastElementChild.onclick = () => row.remove();
+          periods.appendChild(row);
+        }
+        $("#add_p", add).onclick = () => addPeriodRow();
+        addPeriodRow();
+        addPeriodRow();
+
+        $("#save_tt", add).onclick = async () => {
+          const payload = {
+            grade: $("#tt_grade").value.trim(),
+            day: capitalize($("#tt_day").value),
+            periods: [...periods.children]
+              .map((r) => {
+                const [time, subject, teacher, room] = [
+                  ...r.querySelectorAll("input"),
+                ].map((i) => i.value.trim());
+                return { time, subject, teacher, room };
+              })
+              .filter((p) => p.time && p.subject),
+          };
+          try {
+            await api("/timetable", "POST", payload);
+            notify(add, true);
+          } catch (e) {
+            alert(e.data?.error || "Failed");
+            notify(add, false);
+          }
+        };
+
+        $("#v_go", list).onclick = async () => {
+          const g = $("#v_grade", list).value.trim();
+          const d = $("#v_day", list).value.trim();
+          if (!g) return alert("Enter grade");
+          try {
+            const dayCap = capitalize(d);
+            const data = d
+              ? await api(
+                  `/timetable/${encodeURIComponent(g)}/${encodeURIComponent(
+                    dayCap
+                  )}`
+                )
+              : await api(`/timetable/${encodeURIComponent(g)}`);
+            const html = [];
+            if (Array.isArray(data)) {
+              // day view
+              html.push(
+                `<h3>${dayCap} — Grade ${g}</h3><table><tr><th>#</th><th>Time</th><th>Subject</th><th>Teacher</th><th>Room/Type</th></tr>`
+              );
+              data.forEach((p, i) => {
+                if (p.Teacher !== undefined) {
+                  html.push(
+                    `<tr><td>${i + 1}</td><td>${p.Time}</td><td>${
+                      p.Subject
+                    }</td><td>${p.Teacher}</td><td>${p.Room}</td></tr>`
+                  );
+                } else {
+                  html.push(
+                    `<tr><td>-</td><td>${p.Time}</td><td colspan="3"><span class="pill muted">${p.Subject}</span></td></tr>`
+                  );
+                }
+              });
+              html.push("</table>");
+            } else {
+              // whole grade view
+              html.push(`<h3>Grade ${g}</h3>`);
+              Object.keys(data).forEach((day) => {
+                html.push(
+                  `<h4>${day}</h4><table><tr><th>#</th><th>Time</th><th>Subject</th><th>Teacher</th><th>Room/Type</th></tr>`
+                );
+                data[day].forEach((p, i) => {
+                  if (p.Teacher !== undefined) {
+                    html.push(
+                      `<tr><td>${i + 1}</td><td>${p.Time}</td><td>${
+                        p.Subject
+                      }</td><td>${p.Teacher}</td><td>${p.Room}</td></tr>`
+                    );
+                  } else {
+                    html.push(
+                      `<tr><td>-</td><td>${p.Time}</td><td colspan="3"><span class="pill muted">${p.Subject}</span></td></tr>`
+                    );
+                  }
+                });
+                html.push("</table>");
+              });
+            }
+            $("#tt_view", list).innerHTML = html.join("");
+          } catch (e) {
+            $("#tt_view", list).innerHTML = `<span class="pill bad">Error: ${
+              e.data?.error || e.status
+            }</span>`;
+          }
+        };
+      }
+
+      /* ---------- Attendance ---------- */
+      function renderAttendance(C) {
+        const card = div("card");
+        card.innerHTML = `
+    <h2>Mark Attendance</h2>
+    <div class="row">
+      <input id="a_roll" placeholder="Roll No">
+      <input id="a_day" placeholder="Day (e.g., Monday)">
+      <button id="a_fetch" class="secondary">Auto-Fill from Timetable</button>
+    </div>
+    <div id="a_list" class="hint">Add or auto-fill subjects, then mark Present/Absent.</div>
+    <div class="row" style="margin-top:8px;">
+      <button id="a_add" class="secondary">+ Add Subject</button>
+      <button id="a_save">Save Attendance</button>
+    </div>
+  `;
+        const view = div("card");
+        view.innerHTML = `
+    <h2>View Attendance</h2>
+    <div class="row">
+      <input id="av_roll" placeholder="Roll No">
+      <button id="av_go" class="secondary">View</button>
+    </div>
+    <div id="av_table" class="muted" style="margin-top:10px">No data</div>
+  `;
+        C.append(card, view);
+
+        ensureRollDatalist($("#a_roll", card));
+        ensureRollDatalist($("#av_roll", view));
+
+        const list = $("#a_list", card);
+        function addRow(subj) {
+          const row = div("row");
+          row.innerHTML = `
+      <input placeholder="Subject" value="${subj || ""}">
+      <select>
+        <option>Present</option>
+        <option>Absent</option>
+      </select>
+      <button class="secondary">Remove</button>
+    `;
+          row.lastElementChild.onclick = () => row.remove();
+          list.appendChild(row);
+        }
+
+        $("#a_add", card).onclick = () => addRow();
+
+        $("#a_fetch", card).onclick = async () => {
+          const r = $("#a_roll", card).value.trim();
+          const d = capitalize($("#a_day", card).value);
+          if (!r || !d) return alert("Enter roll and day");
+          try {
+            const st = await api(`/students/${encodeURIComponent(r)}`);
+            const g = st.Grade;
+            const data = await api(
+              `/timetable/${encodeURIComponent(g)}/${encodeURIComponent(d)}`
+            );
+            list.innerHTML = "";
+            data
+              .filter((p) => p.Teacher !== undefined)
+              .forEach((p) => addRow(p.Subject));
+          } catch (e) {
+            alert(e.data?.error || "Failed");
+          }
+        };
+
+        $("#a_save", card).onclick = async () => {
+          const payload = {
+            roll_no: $("#a_roll").value.trim(),
+            day: capitalize($("#a_day").value),
+            attendance: [...list.children].map((r) => {
+              const [subj, sel] = [
+                r.querySelector("input").value.trim(),
+                r.querySelector("select").value,
+              ];
+              return { Subject: subj, Status: sel };
+            }),
+          };
+          try {
+            await api("/attendance/mark", "POST", payload);
+            notify(card, true);
+          } catch (e) {
+            alert(e.data?.error || "Failed");
+            notify(card, false);
+          }
+        };
+
+        $("#av_go", view).onclick = async () => {
+          const r = $("#av_roll", view).value.trim();
+          if (!r) return;
+          try {
+            const data = await api(`/attendance/${encodeURIComponent(r)}`);
+            const html = [];
+            Object.keys(data).forEach((day) => {
+              html.push(
+                `<h4>${day}</h4><table><tr><th>Subject</th><th>Status</th></tr>`
+              );
+              data[day].forEach((t) => {
+                const cls =
+                  t.Status === "Present"
+                    ? "ok"
+                    : t.Status === "Absent"
+                    ? "bad"
+                    : "";
+                html.push(
+                  `<tr><td>${t.Subject}</td><td><span class="pill ${cls}">${t.Status}</span></td></tr>`
+                );
+              });
+              html.push(`</table>`);
+            });
+            $("#av_table", view).innerHTML = html.join("");
+          } catch (e) {
+            $("#av_table", view).innerHTML = `<span class="pill bad">Error: ${
+              e.data?.error || e.status
+            }</span>`;
+          }
+        };
+      }
+
+      /* ---------- Homework & Diary ---------- */
+      function renderHomework(C) {
+        const setHW = div("card");
+        setHW.innerHTML = `
+    <h2>Set Daily Homework (locks by day)</h2>
+    <div class="row">
+      <input id="h_day" placeholder="Day (e.g., Monday)">
+      <button id="h_add" class="secondary">+ Add Subject Task</button>
+      <button id="h_save">Save Homework</button>
+    </div>
+    <div id="h_list" class="hint">Add subjects and tasks to set for all students.</div>
+  `;
+
+        const markHW = div("card");
+        markHW.innerHTML = `
+    <h2>Mark Homework Completed</h2>
+    <div class="row">
+      <input id="m_roll" placeholder="Roll No">
+      <input id="m_day" placeholder="Day">
+      <button id="m_fetch" class="secondary">Load Tasks</button>
+    </div>
+    <div id="m_tasks" class="muted">No tasks</div>
+    <div class="row" style="margin-top:8px;">
+      <button id="m_save" class="secondary">Save Status</button>
+    </div>
+  `;
+
+        const viewD = div("card");
+        viewD.innerHTML = `
+    <h2>View Diary</h2>
+    <div class="row">
+      <input id="vd_roll" placeholder="Roll No">
+      <input id="vd_day" placeholder="(optional) Day">
+      <button id="vd_go" class="secondary">View</button>
+    </div>
+    <div id="vd_out" class="muted" style="margin-top:10px">No data</div>
+  `;
+
+        C.append(setHW, markHW, viewD);
+
+        ensureRollDatalist($("#m_roll", markHW));
+        ensureRollDatalist($("#vd_roll", viewD));
+
+        const hList = $("#h_list", setHW);
+        function addTaskRow() {
+          const row = div("row");
+          row.innerHTML = `
+      <input placeholder="Subject">
+      <input placeholder="Homework / Task">
+      <button class="secondary">Remove</button>
+    `;
+          row.lastElementChild.onclick = () => row.remove();
+          hList.appendChild(row);
+        }
+        $("#h_add", setHW).onclick = addTaskRow;
+
+        $("#h_save", setHW).onclick = async () => {
+          const day = capitalize($("#h_day", setHW).value);
+          const tasks = [...hList.children]
+            .map((r) => {
+              const [s, h] = [...r.querySelectorAll("input")].map((i) =>
+                i.value.trim()
+              );
+              return { Subject: s, Homework: h };
+            })
+            .filter((t) => t.Subject && t.Homework);
+          if (!day || !tasks.length)
+            return alert("Add day and at least one task");
+          try {
+            await api("/homework/set", "POST", { day, tasks });
+            notify(setHW, true);
+          } catch (e) {
+            alert(e.data?.error || "Failed");
+            notify(setHW, false);
+          }
+        };
+
+        $("#m_fetch", markHW).onclick = async () => {
+          const roll = $("#m_roll", markHW).value.trim();
+          const day = capitalize($("#m_day", markHW).value);
+          if (!roll || !day) return;
+
+          try {
+            await api(`/students/${encodeURIComponent(roll)}`); // ensure exists
+            await api("/homework/mark", "POST", { roll_no: roll, day }); // create if missing (Pending)
+            const entry = await api(
+              `/diary/${encodeURIComponent(roll)}/${encodeURIComponent(day)}`
+            );
+            const box = $("#m_tasks", markHW);
+            box.innerHTML = "";
+            entry.tasks.forEach((t, i) => {
+              const row = div("row");
+              row.innerHTML = `
+          <div style="min-width:220px">${i + 1}. <b>${t.Subject}</b> — ${
+                t.Homework
+              }</div>
+          <select data-index="${i}">
+            <option ${t.Status === "Pending" ? "selected" : ""}>Pending</option>
+            <option ${
+              t.Status === "Completed" ? "selected" : ""
+            }>Completed</option>
+          </select>
+        `;
+              box.appendChild(row);
+            });
+          } catch (e) {
+            alert(e.data?.error || "Failed");
+          }
+        };
+
+        $("#m_save", markHW).onclick = async () => {
+          const roll = $("#m_roll", markHW).value.trim();
+          const day = capitalize($("#m_day", markHW).value);
+          const statuses = [
+            ...$("#m_tasks", markHW).querySelectorAll("select"),
+          ].map((s) => ({ index: +s.dataset.index, Status: s.value }));
+          try {
+            await api("/homework/mark", "POST", {
+              roll_no: roll,
+              day,
+              statuses,
+            });
+            notify(markHW, true);
+          } catch (e) {
+            alert(e.data?.error || "Failed");
+            notify(markHW, false);
+          }
+        };
+
+        $("#vd_go", viewD).onclick = async () => {
+          const roll = $("#vd_roll", viewD).value.trim();
+          const day = $("#vd_day", viewD).value.trim();
+          try {
+            const out = $("#vd_out", viewD);
+            if (day) {
+              const d = await api(
+                `/diary/${encodeURIComponent(roll)}/${encodeURIComponent(
+                  capitalize(day)
+                )}`
+              );
+              out.innerHTML =
+                `<h4>${d.student} — ${d.day}</h4>` +
+                d.tasks
+                  .map(
+                    (t) =>
+                      `<div>• <b>${t.Subject}</b>: ${
+                        t.Homework
+                      } — <span class="pill ${
+                        t.Status === "Completed" ? "ok" : ""
+                      }">${t.Status}</span></div>`
+                  )
+                  .join("");
+            } else {
+              const d = await api(`/diary/${encodeURIComponent(roll)}`);
+              const html = [];
+              Object.keys(d).forEach((k) => {
+                html.push(`<h4>${k}</h4>`);
+                d[k].forEach((t) =>
+                  html.push(
+                    `<div>• <b>${t.Subject}</b>: ${
+                      t.Homework
+                    } — <span class="pill ${
+                      t.Status === "Completed" ? "ok" : ""
+                    }">${t.Status}</span></div>`
+                  )
+                );
+              });
+              out.innerHTML = html.join("");
+            }
+          } catch (e) {
+            $("#vd_out", viewD).innerHTML = `<span class="pill bad">Error: ${
+              e.data?.error || e.status
+            }</span>`;
+          }
+        };
+      }
+
+      /* ---------- Daily Reports ---------- */
+      function renderReports(C) {
+        const log = div("card");
+        log.innerHTML = `
+    <h2>Log Daily Activity</h2>
+    <div class="grid">
+      <div class="third"><label>Roll No</label><input id="r_roll"></div>
+      <div class="third"><label>Date</label><input id="r_date" placeholder="DD-MM-YYYY"></div>
+      <div class="third"><label>Lunch</label>
+        <select id="r_lunch"><option value="yes">yes</option><option value="no">no</option></select>
+      </div>
+    </div>
+    <div id="acts" class="hint">Add activities with remarks.</div>
+    <div class="row" style="margin-top:8px;">
+      <button id="r_add" class="secondary">+ Add Activity</button>
+      <button id="r_save">Save Report</button>
+    </div>
+  `;
+        const view = div("card");
+        view.innerHTML = `
+    <h2>View Reports</h2>
+    <div class="row">
+      <input id="vr_roll" placeholder="Roll No">
+      <button id="vr_go" class="secondary">View</button>
+    </div>
+    <div id="vr_out" class="muted" style="margin-top:10px">No data</div>
+  `;
+        C.append(log, view);
+
+        ensureRollDatalist($("#r_roll", log));
+        ensureRollDatalist($("#vr_roll", view));
+
+        const acts = $("#acts", log);
+        function addAct() {
+          const row = div("row");
+          row.innerHTML = `
+      <input placeholder="Activity">
+      <input placeholder="Remark">
+      <button class="secondary">Remove</button>
+    `;
+          row.lastElementChild.onclick = () => row.remove();
+          acts.appendChild(row);
+        }
+        $("#r_add", log).onclick = addAct;
+
+        $("#r_save", log).onclick = async () => {
+          const payload = {
+            roll_no: $("#r_roll").value.trim(),
+            date: $("#r_date").value.trim(),
+            lunch: $("#r_lunch").value,
+            activities: [...acts.children]
+              .map((r) => {
+                const [a, rm] = [...r.querySelectorAll("input")].map((i) =>
+                  i.value.trim()
+                );
+                return { Activity: a, Remark: rm };
+              })
+              .filter((a) => a.Activity),
+          };
+          try {
+            await api("/report/log", "POST", payload);
+            notify(log, true);
+          } catch (e) {
+            alert(e.data?.error || "Failed");
+            notify(log, false);
+          }
+        };
+
+        $("#vr_go", view).onclick = async () => {
+          const r = $("#vr_roll", view).value.trim();
+          if (!r) return;
+          try {
+            const data = await api(`/report/${encodeURIComponent(r)}`);
+            const html = [];
+            Object.keys(data).forEach((date) => {
+              html.push(`<h4>📅 ${date} — 🍱 ${data[date].Lunch}</h4><ul>`);
+              data[date].Activities.forEach((a) =>
+                html.push(
+                  `<li>${a.Activity} <span class="muted">(${a.Remark})</span></li>`
+                )
+              );
+              html.push(`</ul>`);
+            });
+            $("#vr_out", view).innerHTML = html.join("");
+          } catch (e) {
+            $("#vr_out", view).innerHTML = `<span class="pill bad">Error: ${
+              e.data?.error || e.status
+            }</span>`;
+          }
+        };
+      }
+
+      /* ---------- Behavior ---------- */
+      function renderBehavior(C) {
+        const rec = div("card");
+        rec.innerHTML = `
+    <h2>Record Student Behavior</h2>
+    <div class="row">
+      <input id="b_roll" placeholder="Roll No">
+      <select id="b_t"><option>Good</option><option>Bad</option><option>Neutral</option></select>
+      <select id="b_c"><option>Good</option><option>Bad</option><option>Neutral</option></select>
+      <input id="b_note" placeholder="Note / Comment" class="two-third">
+      <button id="b_save">Save</button>
+    </div>
+  `;
+        const view = div("card");
+        view.innerHTML = `
+    <h2>View Behavior</h2>
+    <div class="row">
+      <input id="bv_roll" placeholder="Roll No">
+      <button id="bv_go" class="secondary">View</button>
+    </div>
+    <div id="bv_out" class="muted" style="margin-top:10px">No data</div>
+  `;
+        C.append(rec, view);
+
+        ensureRollDatalist($("#b_roll", rec));
+        ensureRollDatalist($("#bv_roll", view));
+
+        $("#b_save", rec).onclick = async () => {
+          const payload = {
+            roll_no: $("#b_roll").value.trim(),
+            with_teacher: $("#b_t").value,
+            with_classmates: $("#b_c").value,
+            note: $("#b_note").value.trim(),
+          };
+          try {
+            await api("/behavior/record", "POST", payload);
+            notify(rec, true);
+          } catch (e) {
+            alert(e.data?.error || "Failed");
+            notify(rec, false);
+          }
+        };
+
+        $("#bv_go", view).onclick = async () => {
+          const r = $("#bv_roll", view).value.trim();
+          if (!r) return;
+          try {
+            const data = await api(`/behavior/${encodeURIComponent(r)}`);
+            const html = [`<h4>${data.student} (Roll: ${data.roll_no})</h4>`];
+            data.records.forEach((x, i) => {
+              html.push(
+                `<div><b>Record ${i + 1}</b>: Teacher <span class="pill">${
+                  x["With Teacher"]
+                }</span> | Classmates <span class="pill">${
+                  x["With Classmates"]
+                }</span><br><span class="muted">${
+                  x.Note || ""
+                }</span></div><hr/>`
+              );
+            });
+            $("#bv_out", view).innerHTML = html.join("");
+          } catch (e) {
+            $("#bv_out", view).innerHTML = `<span class="pill bad">Error: ${
+              e.data?.error || e.status
+            }</span>`;
+          }
+        };
+      }
+
+      /* ---------- Messages (Email Notifications) ---------- */
+      function renderMessages(C) {
+        const compose = div("card");
+        compose.innerHTML = `
+    <h2>Notify Parents</h2>
+    <div class="grid">
+      <div class="third">
+        <label>Roll No</label>
+        <input id="n_roll" placeholder="Roll No">
+        <div class="hint">Required.</div>
+      </div>
+      <div class="third">
+        <label>Day (Attendance & Diary)</label>
+        <input id="n_day" placeholder="(optional) Monday">
+        <div class="hint">If empty, uses latest available day.</div>
+      </div>
+      <div class="third">
+        <label>Date (Daily Report)</label>
+        <input id="n_date" placeholder="(optional) DD-MM-YYYY">
+        <div class="hint">If empty, uses latest available date.</div>
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top:8px">
+      <div class="two-third">
+        <label>Recipients (override)</label>
+        <input id="n_to" placeholder="mom@example.com, dad@example.com">
+        <div class="hint">Optional. If empty, uses saved ParentEmails for the student.</div>
+      </div>
+      <div class="third">
+        <label>Actions</label>
+        <div class="actions">
+          <button id="n_preview" class="secondary">Preview Message</button>
+          <button id="n_send" class="secondary">Send Email</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="n_status" class="hint" style="margin-top:6px"></div>
+
+    <div id="n_preview_box" style="margin-top:12px; display:none">
+      <div class="row">
+        <input id="n_subject" placeholder="Subject (auto)" class="two-third">
+        <button id="n_copy_subject" class="secondary">Copy Subject</button>
+      </div>
+      <label style="margin-top:10px">Preview</label>
+      <div class="pre" id="n_body" style="min-height:140px"></div>
+      <div class="row" style="margin-top:8px">
+        <button id="n_copy_body" class="secondary">Copy Body</button>
+      </div>
+      <div class="hint">Preview uses compile_student_update. Sending requires SMTP env variables configured on the server.</div>
+    </div>
+  `;
+        C.appendChild(compose);
+
+        ensureRollDatalist($("#n_roll", compose));
+
+        const status = $("#n_status", compose);
+        function setStatus(msg, ok = true) {
+          status.innerHTML = msg
+            ? ok
+              ? msg
+              : `<span class="pill bad">${msg}</span>`
+            : "";
+        }
+
+        function buildPayload(preview = false) {
+          const roll = $("#n_roll", compose).value.trim();
+          const day = $("#n_day", compose).value.trim();
+          const date = $("#n_date", compose).value.trim();
+          const toStr = $("#n_to", compose).value.trim();
+          const payload = { roll_no: roll };
+          if (day) payload.day = capitalize(day);
+          if (date) payload.date = date;
+          if (toStr) {
+            payload.to = toStr
+              .split(",")
+              .map((x) => x.trim())
+              .filter(Boolean);
+          }
+          if (preview) payload.preview_only = true;
+          return payload;
+        }
+
+        $("#n_preview", compose).onclick = async () => {
+          const roll = $("#n_roll", compose).value.trim();
+          if (!roll) {
+            setStatus("Enter roll number", false);
+            return;
+          }
+          try {
+            const res = await api(
+              "/notify/parents",
+              "POST",
+              buildPayload(true)
+            );
+            $("#n_preview_box", compose).style.display = "";
+            $("#n_subject", compose).value = res.subject || "";
+            $("#n_body", compose).textContent = res.body || "";
+            setStatus(
+              `Preview ready. To: ${
+                (res.to || []).join(", ") || "(student's saved ParentEmails)"
+              }`
+            );
+          } catch (e) {
+            setStatus(e.data?.error || "Failed to preview", false);
+          }
+        };
+
+        $("#n_send", compose).onclick = async () => {
+          const roll = $("#n_roll", compose).value.trim();
+          if (!roll) {
+            setStatus("Enter roll number", false);
+            return;
+          }
+          try {
+            const res = await api(
+              "/notify/parents",
+              "POST",
+              buildPayload(false)
+            );
+            setStatus(`Email sent to: ${(res.to || []).join(", ")}`);
+            notify(compose, true);
+            // show a user-visible confirmation toast
+            if (typeof showToast === "function") {
+              showToast("Message sent successfully", "ok");
+            } else {
+              // fallback to alert if toast is unavailable
+              alert("Message sent successfully");
+            }
+          } catch (e) {
+            setStatus(
+              e.data?.details || e.data?.error || "Failed to send email",
+              false
+            );
+            notify(compose, false);
+            if (typeof showToast === "function") {
+              showToast("Failed to send message", "err");
+            }
+          }
+        };
+
+        $("#n_copy_subject", compose).onclick = () => {
+          const ok = copyToClipboard($("#n_subject", compose).value || "");
+          setStatus(ok ? "Subject copied" : "Copy failed", ok);
+        };
+        $("#n_copy_body", compose).onclick = () => {
+          const ok = copyToClipboard($("#n_body", compose).textContent || "");
+          setStatus(ok ? "Body copied" : "Copy failed", ok);
+        };
+      }
+
+      /* ---------- Data Viewer / Reset ---------- */
+      function renderData(C) {
+        const card = div("card");
+        card.innerHTML = `
+    <h2>Quick Data Viewer</h2>
+    <div class="row">
+      <button class="secondary" data-k="students">Students</button>
+      <button class="secondary" data-k="timetable">Timetable</button>
+      <button class="secondary" data-k="attendance">Attendance (enter roll below)</button>
+      <button class="secondary" data-k="diary">Diary (enter roll below)</button>
+      <button class="secondary" data-k="report">Reports (enter roll below)</button>
+      <button class="secondary" data-k="behavior">Behavior (enter roll below)</button>
+    </div>
+    <div class="row" style="margin-top:8px;">
+      <input id="dv_roll" placeholder="Roll (for per-student views)">
+      <button id="dv_reset" style="margin-left:auto;background:#ef4444;color:white">Reset ALL data</button>
+    </div>
+    <pre id="dv_out" style="margin-top:10px;white-space:pre-wrap"></pre>
+    <div class="hint">⚠ Reset clears everything in memory.</div>
+  `;
+        C.appendChild(card);
+        const out = $("#dv_out", card);
+
+        card.querySelectorAll("button.secondary").forEach((b) => {
+          b.onclick = async () => {
+            const k = b.dataset.k;
+            try {
+              if (k === "students")
+                out.textContent = JSON.stringify(
+                  await api("/students"),
+                  null,
+                  2
+                );
+              if (k === "timetable") {
+                out.textContent = "Use Timetable tab to view by grade/day.";
+              }
+              if (k === "attendance") {
+                const r = $("#dv_roll", card).value.trim();
+                out.textContent = r
+                  ? JSON.stringify(
+                      await api(`/attendance/${encodeURIComponent(r)}`),
+                      null,
+                      2
+                    )
+                  : "Enter a Roll No";
+              }
+              if (k === "diary") {
+                const r = $("#dv_roll", card).value.trim();
+                out.textContent = r
+                  ? JSON.stringify(
+                      await api(`/diary/${encodeURIComponent(r)}`),
+                      null,
+                      2
+                    )
+                  : "Enter a Roll No";
+              }
+              if (k === "report") {
+                const r = $("#dv_roll", card).value.trim();
+                out.textContent = r
+                  ? JSON.stringify(
+                      await api(`/report/${encodeURIComponent(r)}`),
+                      null,
+                      2
+                    )
+                  : "Enter a Roll No";
+              }
+              if (k === "behavior") {
+                const r = $("#dv_roll", card).value.trim();
+                out.textContent = r
+                  ? JSON.stringify(
+                      await api(`/behavior/${encodeURIComponent(r)}`),
+                      null,
+                      2
+                    )
+                  : "Enter a Roll No";
+              }
+            } catch (e) {
+              out.textContent = "Error: " + (e.data?.error || e.status || "");
+            }
+          };
+        });
+
+        $("#dv_reset", card).onclick = async () => {
+          if (!confirm("Really reset ALL data?")) return;
+          try {
+            await api("/reset", "POST", {});
+            out.textContent = "All data cleared.";
+            notify(card, true);
+          } catch (e) {
+            alert("Failed");
+            notify(card, false);
+          }
+        };
+      }
+
+      (function () {
+        "use strict";
+
+        // Keys for localStorage
+        const TOKEN_KEY = "usm-token";
+        const USER_KEY = "usm-user";
+
+        // DOM helpers
+        const $ = (sel, el = document) => el.querySelector(sel);
+
+        // Optional helpers from the page; guard if missing
+        const showToast =
+          window.showToast || ((msg) => console.log("[toast]", msg));
+        const copyToClipboard =
+          window.copyToClipboard ||
+          (async (text) => {
+            try {
+              await navigator.clipboard.writeText(text);
+              return true;
+            } catch {
+              return false;
+            }
+          });
+
+        // Elements
+        const modal = $("#login-modal");
+        const inputUser = $("#login-username");
+        const inputPass = $("#login-password");
+        const btnSubmit = $("#login-submit");
+        const btnCancel = $("#login-cancel");
+        const hint = $("#login-hint");
+
+        const userWrap = $("#user-wrap");
+        const userBtn = $("#user-btn");
+        const userMenu = $("#user-menu");
+        const signInAction = $("#signin-action");
+        const signOutAction = $("#signout-action");
+        const copyTokenAction = $("#copy-token-action");
+        const userNameTop = $("#user-name");
+        const avatarTop = $("#avatar");
+        const avatarSm = $("#avatar-sm");
+        const umName = $("#um-name");
+        const umEmail = $("#um-email");
+
+        // API base injected by page
+        const API_BASE = window.API_BASE || "";
+
+        // Auth state helpers
+        function getToken() {
+          return localStorage.getItem(TOKEN_KEY) || "";
+        }
+        function getUser() {
+          try {
+            return JSON.parse(localStorage.getItem(USER_KEY) || "null");
+          } catch {
+            return null;
+          }
+        }
+        function setAuth(token, user) {
+          if (token) localStorage.setItem(TOKEN_KEY, token);
+          if (user) localStorage.setItem(USER_KEY, JSON.stringify(user));
+          updateUserUI();
+        }
+        function clearAuth() {
+          localStorage.removeItem(TOKEN_KEY);
+          localStorage.removeItem(USER_KEY);
+          updateUserUI();
+        }
+
+        function initialAvatarChar(name, email) {
+          const n = (name || "").trim();
+          if (n) return n[0].toUpperCase();
+          const e = (email || "").trim();
+          if (e) return e[0].toUpperCase();
+          return "👤";
+        }
+
+        function updateUserUI() {
+          const user = getUser();
+          const signedIn = !!user;
+          const displayName = signedIn
+            ? user.name || user.username || user.email || "User"
+            : "Guest";
+          const email = signedIn ? user.email || "" : "Not signed in";
+          const av = initialAvatarChar(user?.name, user?.email);
+
+          if (userNameTop)
+            userNameTop.textContent = signedIn ? displayName : "";
+          if (avatarTop) avatarTop.textContent = av;
+          if (avatarSm) avatarSm.textContent = av;
+          if (umName) umName.textContent = displayName;
+          if (umEmail) umEmail.textContent = email;
+
+          if (signInAction) signInAction.style.display = signedIn ? "none" : "";
+          if (signOutAction)
+            signOutAction.style.display = signedIn ? "" : "none";
+          if (copyTokenAction)
+            copyTokenAction.style.display = getToken() ? "" : "none";
+
+          if (userBtn) userBtn.setAttribute("aria-expanded", "false");
+          if (userMenu) userMenu.classList.remove("open");
+        }
+
+        // API wrapper: include cookies and optional Bearer token
+        const apiWithCreds = async function (
+          path,
+          method = "GET",
+          data = null,
+          extraOpts = {}
+        ) {
+          const token = getToken();
+          const headers = Object.assign({}, extraOpts.headers || {});
+          if (token) headers["Authorization"] = "Bearer " + token;
+          if (method !== "GET" && data != null && !headers["Content-Type"]) {
+            headers["Content-Type"] = "application/json";
+          }
+          const opts = Object.assign(
+            { method, headers, credentials: "include" },
+            extraOpts
+          );
+          if (method !== "GET" && data != null)
+            opts.body = JSON.stringify(data);
+
+          const res = await fetch(API_BASE + path, opts);
+          const text = await res.text();
+          let json = {};
+          try {
+            json = text ? JSON.parse(text) : {};
+          } catch {
+            json = { raw: text };
+          }
+
+          if (!res.ok) throw { status: res.status, data: json };
+          return json;
+        };
+        window.api = apiWithCreds;
+
+        // Modal controls (optional inline)
+        function openLoginModal(open = true) {
+          if (!modal) return;
+          modal.classList.toggle("show", open);
+          modal.setAttribute("aria-hidden", open ? "false" : "true");
+          if (open) {
+            hint &&
+              (hint.textContent =
+                "Use your administrator or teacher account to access data.");
+            inputPass && (inputPass.value = "");
+            inputUser && inputUser.focus();
+          } else {
+            userBtn && userBtn.focus();
+          }
+        }
+
+        // Inline login (optional; default flow uses /login page)
+        async function doLogin() {
+          if (!inputUser || !inputPass) return;
+          const usernameOrEmail = inputUser.value.trim();
+          const password = inputPass.value;
+
+          if (!usernameOrEmail || !password) {
+            hint &&
+              (hint.textContent = "Please enter both username and password.");
+            showToast("Missing credentials", "err");
+            return;
+          }
+
+          btnSubmit && (btnSubmit.disabled = true);
+          hint && (hint.textContent = "Signing in...");
+          try {
+            const res = await window.api("/api/auth/login", "POST", {
+              email: usernameOrEmail,
+              password,
+            });
+            const user = res.user || null;
+            if (user) {
+              setAuth(getToken(), user);
+              showToast("Signed in");
+              openLoginModal(false);
+            }
+            try {
+              const me = await window.api("/api/auth/me", "GET");
+              const u = me?.user || me || null;
+              if (u) setAuth(getToken(), u);
+            } catch {
+              clearAuth();
+            }
+          } catch (e) {
+            const msg = e?.data?.error || e?.data?.message || "Sign-in failed";
+            hint && (hint.textContent = msg);
+            showToast(msg, "err");
+          } finally {
+            btnSubmit && (btnSubmit.disabled = false);
+          }
+        }
+
+        // User menu toggle
+        function toggleUserMenu(force) {
+          if (!userMenu || !userBtn) return;
+          const open =
+            typeof force === "boolean"
+              ? force
+              : !userMenu.classList.contains("open");
+          userMenu.classList.toggle("open", open);
+          userMenu.setAttribute("aria-hidden", open ? "false" : "true");
+          userBtn.setAttribute("aria-expanded", open ? "true" : "false");
+        }
+
+        async function copyToken() {
+          const t = getToken();
+          if (!t) {
+            showToast("No token available", "err");
+            return;
+          }
+          const ok = await copyToClipboard(t);
+          showToast(ok ? "API token copied" : "Copy failed", ok ? "ok" : "err");
+        }
+
+        async function refreshUser() {
+          try {
+            const me = await window.api("/api/auth/me", "GET");
+            const u = me?.user || me || null;
+            if (u) {
+              setAuth(getToken(), u);
+              return true;
+            }
+            return false;
+          } catch (e) {
+            if (e?.status === 401 || e?.status === 403) clearAuth();
+            return false;
+          }
+        }
+
+        // Wire events
+        if (userBtn && userMenu) {
+          userBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            toggleUserMenu();
+          });
+          document.addEventListener("click", (e) => {
+            if (userWrap && !userWrap.contains(e.target)) toggleUserMenu(false);
+          });
+          document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") toggleUserMenu(false);
+          });
+        }
+
+        // Sign in -> go to /login
+        if (signInAction) {
+          signInAction.addEventListener("click", () => {
+            window.location.href = "/login";
+          });
+        }
+
+        // Sign out -> API logout, clear state, close menu, no redirect
+        if (signOutAction) {
+          signOutAction.addEventListener("click", async () => {
+            try {
+              await window.api("/api/auth/logout", "POST", {});
+            } catch {}
+            clearAuth();
+            showToast("Signed out");
+            toggleUserMenu(false);
+            // Redirect user to public home after logout
+            window.location.href = "/";
+          });
+        }
+
+        if (copyTokenAction) {
+          copyTokenAction.addEventListener("click", copyToken);
+        }
+
+        if (btnCancel)
+          btnCancel.addEventListener("click", () => openLoginModal(false));
+        if (btnSubmit) btnSubmit.addEventListener("click", doLogin);
+
+        if (modal) {
+          modal.addEventListener("click", (e) => {
+            const dialog = $(".dialog", modal);
+            if (dialog && !dialog.contains(e.target)) openLoginModal(false);
+          });
+          document.addEventListener("keydown", (e) => {
+            if (!modal.classList.contains("show")) return;
+            if (e.key === "Escape") openLoginModal(false);
+            if (e.key === "Enter") {
+              const active = document.activeElement;
+              if (active && (active === inputUser || active === inputPass)) {
+                e.preventDefault();
+                doLogin();
+              }
+            }
+          });
+        }
+
+        // Initialize UI and probe session on load
+        updateUserUI();
+        refreshUser();
+
+        // Expose helpers
+        window.auth = {
+          getToken,
+          getUser,
+          isSignedIn: () => !!getUser(),
+          openLogin: () => (window.location.href = "/login"),
+          logout: async () => {
+            try {
+              await window.api("/api/auth/logout", "POST", {});
+            } catch {}
+            clearAuth();
+            showToast("Signed out");
+          },
+        };
+      })();
+    </script>
+  </body>
+</html>
