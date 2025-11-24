@@ -137,5 +137,3 @@ PRs and issues welcome. Keep changes focused and include tests when applicable.
 ## 📜 License
 
 MIT © 2025
-
-If you want Docker, CI badges or deployment snippets for a specific host, tell me which target and I’ll add them.
