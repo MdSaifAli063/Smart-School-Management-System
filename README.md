@@ -27,7 +27,7 @@ Why use this project?
 
 ---
 
-## ✨ Features (in detail)
+## ✨ Features 
 
 ### 👩‍🏫 Teacher Authentication
 
