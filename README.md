@@ -13,7 +13,7 @@ Why use this project?
 
 ### Preview
   
-
+![image](https://github.com/MdSaifAli063/Smart-School-Management-System/blob/d34679e15d692e0be0e05ecb7c5a4874779f6021/Screenshot%202025-12-08%20095737.png)
 ---
 
 ## Table of Contents
