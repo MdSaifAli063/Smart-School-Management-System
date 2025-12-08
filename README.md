@@ -11,7 +11,7 @@ Why use this project?
 - 📣 Email preview & send via SMTP.
 - 🔧 Minimal UI + simple REST endpoints for rapid prototyping.
 
-- Preview
+### Preview
   
 
 ---
