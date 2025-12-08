@@ -18,6 +18,7 @@ from email.mime.text import MIMEText
 from email.utils import formataddr
 
 from functools import wraps
+from bson import ObjectId
 
 # Optional .env loading
 try:
@@ -48,7 +49,6 @@ def _getenv_clean(name: str, default: str | None = None) -> str | None:
 
 MONGODB_URI = _getenv_clean(
     "MONGODB_URI",
-    "",
 )
 MONGODB_DB = _getenv_clean("MONGODB_DB", "school_app")
 PORT = int(_getenv_clean("PORT", "5000") or "5000")
@@ -79,6 +79,7 @@ except InvalidURI as e:
 
 db = client[MONGODB_DB]
 teachers = db.teachers
+students_collection = db.students
 
 # Ensure unique index on email; non-fatal if fails at boot
 try:
@@ -86,8 +87,13 @@ try:
 except Exception:
     pass
 
+# Create index on roll_no for students
+try:
+    students_collection.create_index([("roll_no", ASCENDING)], unique=True)
+except Exception:
+    pass
+
 # -------------------- In-memory "DB" for school features --------------------
-students = {}
 timetable = {}
 attendance = {}
 diary = {}
@@ -151,9 +157,13 @@ def login_required(fn):
 
 def ensure_student(roll_no):
     roll_no = str(roll_no)
-    if roll_no not in students:
-        return False, jsonify({"error": "Student not found"}), 404
-    return True, None, None
+    try:
+        student = students_collection.find_one({"roll_no": roll_no})
+        if not student:
+            return False, jsonify({"error": "Student not found"}), 404
+        return True, None, None
+    except Exception as e:
+        return False, jsonify({"error": f"Database error: {str(e)}"}), 500
 
 def _env(name, default=None):
     val = os.getenv(name)
@@ -208,7 +218,14 @@ def _format_behaviors(items):
 
 def compile_student_update(roll_no, day: str | None = None, date: str | None = None):
     roll_no = str(roll_no)
-    stu = students.get(roll_no, {})
+    try:
+        stu = students_collection.find_one({"roll_no": roll_no}, {"_id": 0})
+    except Exception:
+        stu = {}
+    
+    if not stu:
+        stu = {}
+    
     name = stu.get("Name", "")
     grade = stu.get("Grade", "")
     header = f"Student Update\nName: {name}\nRoll No: {roll_no}\nGrade: {grade}\n"
@@ -330,6 +347,26 @@ def send_email(to_addrs, subject, body):
         return True, None
     except Exception as e:
         return False, str(e)
+
+def _serialize_doc(doc):
+    """Convert MongoDB document to JSON-serializable dict."""
+    if doc is None:
+        return None
+    if isinstance(doc, dict):
+        result = {}
+        for k, v in doc.items():
+            if isinstance(v, ObjectId):
+                result[k] = str(v)
+            elif isinstance(v, dict):
+                result[k] = _serialize_doc(v)
+            elif isinstance(v, list):
+                result[k] = [_serialize_doc(item) if isinstance(item, dict) else (str(item) if isinstance(item, ObjectId) else item) for item in v]
+            else:
+                result[k] = v
+        return result
+    if isinstance(doc, ObjectId):
+        return str(doc)
+    return doc
 
 # -------------------- Auth + Pages --------------------
 
@@ -479,8 +516,6 @@ def add_student():
         return jsonify({"error": f"Missing fields: {', '.join(missing)}"}), 400
 
     roll_no = str(data["roll_no"]).strip()
-    if roll_no in students:
-        return jsonify({"error": f"Student with roll_no {roll_no} already exists"}), 409
 
     parent_emails = []
     for key in ("parent_email", "father_email", "mother_email"):
@@ -488,7 +523,8 @@ def add_student():
         if val:
             parent_emails.append(val)
 
-    students[roll_no] = {
+    student_doc = {
+        "roll_no": roll_no,
         "Name": data["name"],
         "Age": data["age"],
         "Grade": data["grade"],
@@ -499,27 +535,51 @@ def add_student():
         "Address": data["address"],
         "ParentEmails": parent_emails,
     }
-    diary.setdefault(roll_no, {})
 
-    return jsonify({"message": "Student added", "student": students[roll_no]}), 201
+    try:
+        res = students_collection.insert_one(student_doc)
+        diary.setdefault(roll_no, {})
+        student_doc["_id"] = str(res.inserted_id)
+        return jsonify({"message": "Student added", "student": _serialize_doc(student_doc), "id": str(res.inserted_id)}), 201
+    except DuplicateKeyError:
+        return jsonify({"error": f"Student with roll_no {roll_no} already exists"}), 409
+    except Exception as e:
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
 
 @app.get("/students")
 def list_students():
-    return jsonify(students)
+    try:
+        students_list = list(students_collection.find({}))
+        result = {}
+        for s in students_list:
+            roll = s.get("roll_no")
+            if roll:
+                result[roll] = _serialize_doc(s)
+        return jsonify(result)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.get("/students/<roll_no>")
 def get_student(roll_no):
     ok, resp, code = ensure_student(roll_no)
     if not ok:
         return resp, code
-    return jsonify(students[str(roll_no)])
+    try:
+        student = students_collection.find_one({"roll_no": str(roll_no)})
+        return jsonify(_serialize_doc(student))
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.get("/students/<roll_no>/contacts")
 def get_parent_contacts(roll_no):
     ok, resp, code = ensure_student(roll_no)
     if not ok:
         return resp, code
-    return jsonify({"parent_emails": students[str(roll_no)].get("ParentEmails", [])})
+    try:
+        student = students_collection.find_one({"roll_no": str(roll_no)}, {"ParentEmails": 1})
+        return jsonify({"parent_emails": student.get("ParentEmails", []) if student else []})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.post("/students/<roll_no>/contacts")
 def set_parent_contacts(roll_no):
@@ -533,8 +593,14 @@ def set_parent_contacts(roll_no):
     emails = [e.strip() for e in emails if isinstance(e, str) and e.strip()]
     if not emails:
         return jsonify({"error": "Provide at least one parent email in parent_emails[]"}), 400
-    students[str(roll_no)]["ParentEmails"] = emails
-    return jsonify({"message": "Parent emails updated", "parent_emails": emails})
+    try:
+        students_collection.update_one(
+            {"roll_no": str(roll_no)},
+            {"$set": {"ParentEmails": emails}}
+        )
+        return jsonify({"message": "Parent emails updated", "parent_emails": emails})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # -------------------- Timetable --------------------
 def _grade_key(grade: Optional[str]) -> str:
@@ -636,8 +702,15 @@ def mark_attendance():
     if not ok:
         return resp, code
 
-    # normalize grade key from stored student grade
-    grade_raw = students[roll_no].get("Grade", "")
+    # Fetch student from DB to read Grade
+    try:
+        stu = students_collection.find_one({"roll_no": roll_no}, {"Grade": 1})
+    except Exception as e:
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
+    if not stu:
+        return jsonify({"error": "Student not found"}), 404
+
+    grade_raw = stu.get("Grade", "")
     grade_key = _grade_key(grade_raw)
 
     # Find a matching stored day key for this grade
@@ -735,7 +808,13 @@ def view_diary_by_day(roll_no, day):
     r = str(roll_no)
     d = day.capitalize()
     if r in diary and d in diary[r]:
-        return jsonify({"student": students.get(r, {}).get("Name", ""), "day": d, "tasks": diary[r][d]})
+        # fetch name from DB (student collection)
+        try:
+            stu = students_collection.find_one({"roll_no": r}, {"Name": 1})
+        except Exception:
+            stu = None
+        student_name = (stu.get("Name") if isinstance(stu, dict) else None) or ""
+        return jsonify({"student": student_name, "day": d, "tasks": diary[r][d]})
     return jsonify({"error": "No homework marked yet for that day"}), 404
 
 # -------------------- Daily Report --------------------
@@ -794,7 +873,12 @@ def view_behavior(roll_no):
     r = str(roll_no)
     if r not in behaviors:
         return jsonify({"error": "No behavior records found"}), 404
-    name = students.get(r, {}).get("Name", "")
+    # fetch name from DB (student collection)
+    try:
+        stu = students_collection.find_one({"roll_no": r}, {"Name": 1})
+    except Exception:
+        stu = None
+    name = (stu.get("Name") if isinstance(stu, dict) else None) or ""
     return jsonify({"student": name, "roll_no": r, "records": behaviors[r]})
 
 # -------------------- Notifications --------------------
@@ -809,6 +893,13 @@ def notify_parents():
     if not ok:
         return resp, code
 
+    # fetch student info from DB
+    try:
+        stu = students_collection.find_one({"roll_no": roll_no}, {"ParentEmails": 1, "Name": 1})
+    except Exception as e:
+        return jsonify({"error": f"Database error: {str(e)}"}), 500
+    stu = stu or {}
+
     day = str(data.get("day", "")).strip()
     date = str(data.get("date", "")).strip()
     to = data.get("to")
@@ -819,13 +910,13 @@ def notify_parents():
     elif isinstance(to, list):
         recipients = [x.strip() for x in to if isinstance(x, str) and x.strip()]
     else:
-        recipients = list(students[roll_no].get("ParentEmails", []))
+        recipients = list(stu.get("ParentEmails", []) or [])
 
     if not recipients and not preview_only:
         return jsonify({"error": "No parent email configured. Provide 'to' or set 'ParentEmails' for the student."}), 400
 
     body = compile_student_update(roll_no, day or None, date or None)
-    subject = f"Update for {students[roll_no].get('Name','Student')} (Roll {roll_no})"
+    subject = f"Update for {stu.get('Name','Student')} (Roll {roll_no})"
 
     if preview_only:
         return jsonify({"message": "Preview generated (email not sent).", "subject": subject, "body": body, "to": recipients})
@@ -885,9 +976,7 @@ def smtp_health():
 @app.post("/reset")
 def reset_all():
     """
-    Clear all in-memory data. Optional ADMIN_TOKEN protection via:
-      - Header: X-Admin-Token
-      - Query:  ?token=
+    Clear all in-memory data and student collection (admin protected if ADMIN_TOKEN set).
     """
     admin_token = _env("ADMIN_TOKEN")
     if admin_token:
@@ -895,7 +984,15 @@ def reset_all():
         if provided != admin_token:
             return jsonify({"error": "Forbidden"}), 403
 
-    students.clear(); timetable.clear(); attendance.clear(); diary.clear()
+    # Clear students from DB
+    try:
+        students_collection.delete_many({})
+    except Exception:
+        # non-fatal; proceed to clear in-memory structures
+        pass
+
+    # Clear in-memory structures
+    timetable.clear(); attendance.clear(); diary.clear()
     shared_homework.clear(); daily_report.clear(); behaviors.clear()
     return jsonify({"message": "All data cleared"})
 
