@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart School Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            --bg-light: #ffffff;
+            --bg-dark: #1e293b;
+            --sidebar-light: #f8fafc;
+            --sidebar-dark: #0f172a;
+            --text-light: #1e293b;
+            --text-dark: #f1f5f9;
+            --hover-light: #e2e8f0;
+            --hover-dark: #334155;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-light);
+            transition: var(--transition);
+        }
+
+        body.dark-mode {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 64px;
+            background: var(--bg-light);
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 100;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+        }
+
+        .dark-mode .header {
+            background: var(--sidebar-dark);
+            border-bottom-color: #334155;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-toggle {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: var(--transition);
+            font-size: 24px;
+        }
+
+        .menu-toggle:hover {
+            background: var(--hover-light);
+        }
+
+        .dark-mode .menu-toggle:hover {
+            background: var(--hover-dark);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: var(--transition);
+            font-size: 20px;
+        }
+
+        .icon-btn:hover {
+            background: var(--hover-light);
+            transform: scale(1.05);
+        }
+
+        .dark-mode .icon-btn:hover {
+            background: var(--hover-dark);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 64px;
+            left: 0;
+            width: 280px;
+            height: calc(100vh - 64px);
+            background: var(--sidebar-light);
+            border-right: 1px solid #e2e8f0;
+            transition: var(--transition);
+            overflow-y: auto;
+            z-index: 90;
+            box-shadow: var(--shadow);
+        }
+
+        .dark-mode .sidebar {
+            background: var(--sidebar-dark);
+            border-right-color: #334155;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-280px);
+        }
+
+        .sidebar-content {
+            padding: 24px 16px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px;
+            background: var(--bg-light);
+            border-radius: 12px;
+            margin-bottom: 24px;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .dark-mode .user-profile {
+            background: var(--bg-dark);
+        }
+
+        .user-profile:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .user-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .user-status {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0 12px;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 4px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-item:hover {
+            background: var(--hover-light);
+            transform: translateX(4px);
+        }
+
+        .dark-mode .nav-item:hover {
+            background: var(--hover-dark);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .nav-text {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Settings Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: var(--bg-light);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        .dark-mode .modal {
+            background: var(--sidebar-dark);
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .dark-mode .modal-header {
+            border-bottom-color: #334155;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 20px;
+            transition: var(--transition);
+        }
+
+        .close-btn:hover {
+            background: var(--hover-light);
+            transform: rotate(90deg);
+        }
+
+        .dark-mode .close-btn:hover {
+            background: var(--hover-dark);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .setting-group {
+            margin-bottom: 32px;
+        }
+
+        .setting-label {
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .setting-description {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 52px;
+            height: 28px;
+            background: #cbd5e1;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .toggle-switch.active {
+            background: var(--primary-color);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: var(--transition);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch.active .toggle-slider {
+            transform: translateX(24px);
+        }
+
+        .color-picker {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 12px;
+        }
+
+        .color-option {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: var(--transition);
+        }
+
+        .color-option:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .color-option.active {
+            border-color: var(--text-light);
+        }
+
+        .dark-mode .color-option.active {
+            border-color: var(--text-dark);
+        }
+
+        .density-options {
+            display: flex;
+            gap: 12px;
+        }
+
+        .density-btn {
+            flex: 1;
+            padding: 12px 24px;
+            border: 2px solid #e2e8f0;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .dark-mode .density-btn {
+            border-color: #334155;
+        }
+
+        .density-btn:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        .density-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            padding: 24px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .dark-mode .action-buttons {
+            border-top-color: #334155;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #e2e8f0;
+        }
+
+        .dark-mode .btn-secondary {
+            border-color: #334155;
+        }
+
+        .btn-secondary:hover {
+            background: var(--hover-light);
+        }
+
+        .dark-mode .btn-secondary:hover {
+            background: var(--hover-dark);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            margin-top: 64px;
+            padding: 32px;
+            transition: var(--transition);
+            min-height: calc(100vh - 64px);
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        .welcome-card {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 48px;
+            border-radius: 16px;
+            margin-bottom: 32px;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+        }
+
+        .welcome-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .welcome-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        /* Scrollbar */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .sidebar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .dark-mode .sidebar::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-280px);
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .welcome-card {
+                padding: 32px 24px;
+            }
+
+            .welcome-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+            <div class="logo">
+                <span>📚</span>
+                <span>Smart School</span>
+            </div>
+        </div>
+        <div class="header-right">
+            <button class="icon-btn" onclick="toggleTheme()" title="Toggle Theme">🌙</button>
+            <button class="icon-btn" onclick="openSettings()" title="Settings">⚙️</button>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-content">
+            <!-- User Profile -->
+            <div class="user-profile">
+                <div class="user-avatar">👤</div>
+                <div class="user-info">
+                    <div class="user-name">Guest</div>
+                    <div class="user-status">Not signed in</div>
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav>
+                <div class="nav-section">
+                    <div class="nav-title">Main Menu</div>
+                    <a href="#" class="nav-item active">
+                        <span class="nav-icon">🏠</span>
+                        <span class="nav-text">Home</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon">👥</span>
+                        <span class="nav-text">Students</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-text">Reports</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon">📅</span>
+                        <span class="nav-text">Schedule</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Management</div>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon">👨‍🏫</span>
+                        <span class="nav-text">Teachers</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon">📚</span>
+                        <span class="nav-text">Courses</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon">🏫</span>
+                        <span class="nav-text">Classes</span>
+                    </a>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-title">Account</div>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon">🔐</span>
+                        <span class="nav-text">Sign In</span>
+                    </a>
+                    <a href="#" class="nav-item">
+                        <span class="nav-icon">🔑</span>
+                        <span class="nav-text">API Token</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="welcome-card">
+            <h1 class="welcome-title">Welcome to Smart School</h1>
+            <p class="welcome-subtitle">Manage your school efficiently with our comprehensive management system</p>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Quick Settings</h2>
+                <button class="close-btn" onclick="closeSettings()">✕</button>
+            </div>
+            <div class="modal-body">
+                <!-- Theme Toggle -->
+                <div class="setting-group">
+                    <label class="setting-label">Theme</label>
+                    <div class="setting-description">Toggle between light and dark mode. Theme is remembered per device.</div>
+                    <div class="toggle-switch" id="themeToggle" onclick="toggleTheme()">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+
+                <!-- Accent Color -->
+                <div class="setting-group">
+                    <label class="setting-label">Accent Color</label>
+                    <div class="setting-description">Pick a highlight color you like.</div>
+                    <div class="color-picker">
+                        <div class="color-option active" style="background: #6366f1;" onclick="setAccentColor('#6366f1', '#8b5cf6')"></div>
+                        <div class="color-option" style="background: #ec4899;" onclick="setAccentColor('#ec4899', '#f472b6')"></div>
+                        <div class="color-option" style="background: #10b981;" onclick="setAccentColor('#10b981', '#34d399')"></div>
+                        <div class="color-option" style="background: #f59e0b;" onclick="setAccentColor('#f59e0b', '#fbbf24')"></div>
+                        <div class="color-option" style="background: #ef4444;" onclick="setAccentColor('#ef4444', '#f87171')"></div>
+                        <div class="color-option" style="background: #06b6d4;" onclick="setAccentColor('#06b6d4', '#22d3ee')"></div>
+                    </div>
+                </div>
+
+                <!-- Density -->
+                <div class="setting-group">
+                    <label class="setting-label">Density</label>
+                    <div class="setting-description">Compact mode tightens paddings for dense data.</div>
+                    <div class="density-options">
+                        <button class="density-btn active" onclick="setDensity('comfortable')">Comfortable</button>
+                        <button class="density-btn" onclick="setDensity('compact')">Compact</button>
+                    </div>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="closeSettings()">Cancel</button>
+                <button class="btn btn-primary" onclick="closeSettings()">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle Sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('mobile-open');
+            } else {
+                sidebar.classList.toggle('collapsed');
+                mainContent.classList.toggle('expanded');
+            }
+        }
+
+        // Toggle Theme
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            const toggle = document.getElementById('themeToggle');
+            
+            if (isDark) {
+                toggle.classList.add('active');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                toggle.classList.remove('active');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.getElementById('themeToggle').classList.add('active');
+        }
+
+        // Settings Modal
+        function openSettings() {
+            document.getElementById('settingsModal').classList.add('active');
+        }
+
+        function closeSettings() {
+            document.getElementById('settingsModal').classList.remove('active');
+        }
+
+        // Close modal on overlay click
+        document.getElementById('settingsModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSettings();
+            }
+        });
+
+        // Set Accent Color
+        function setAccentColor(primary, secondary) {
+            document.documentElement.style.setProperty('--primary-color', primary);
+            document.documentElement.style.setProperty('--secondary-color', secondary);
+            
+            // Update active state
+            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            localStorage.setItem('accentPrimary', primary);
+            localStorage.setItem('accentSecondary', secondary);
+        }
+
+        // Load saved accent color
+        const savedPrimary = localStorage.getItem('accentPrimary');
+        const savedSecondary = localStorage.getItem('accentSecondary');
+        if (savedPrimary && savedSecondary) {
+            setAccentColor(savedPrimary, savedSecondary);
+        }
+
+        // Set Density
+        function setDensity(density) {
+            document.querySelectorAll('.density-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (density === 'compact') {
+                document.body.style.setProperty('--spacing', '0.75');
+            } else {
+                document.body.style.setProperty('--spacing', '1');
+            }
+            
+            localStorage.setItem('density', density);
+        }
+
+        // Active nav item
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Close sidebar on mobile when clicking outside
+        document.addEventListener('click', function(e) {
+            if (window.innerWidth <= 768) {
+                const sidebar = document.getElementById('sidebar');
+                const menuToggle = document.querySelector('.menu-toggle');
+                
+                if (!sidebar.contains(e.target) && !menuToggle.contains(e.target) && sidebar.classList.contains('mobile-open')) {
+                    sidebar.classList.remove('mobile-open');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
