@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About | School Management System</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About | School Management System</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
 
-    body, html {
-      height: 100%;
-      scroll-behavior: smooth;
-      background: #f5f7fa;
-    }
+      body,
+      html {
+        height: 100%;
+        scroll-behavior: smooth;
+        background: #f5f7fa;
+      }
 
-    /* Header: centered nav, better readability */
+      /* Header: centered nav, better readability */
       header {
         display: grid;
         grid-template-columns: auto 1fr auto;
@@ -146,7 +147,7 @@
         transform: translateY(-1px);
       }
       .home-avatar {
-        margin-left : 5px;
+        margin-left: 5px;
         width: 40px;
         height: 40px;
         border-radius: 50%;
@@ -221,129 +222,174 @@
         font-weight: 800;
       }
 
-
-    /* About Section */
-    .about-section {
-      position: relative;
-      background: url('https://cdn.pixabay.com/photo/2024/08/23/11/55/building-8991569_1280.jpg') no-repeat center center/cover;
-      min-height: 100vh;
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: left;
-    }
-
-    .about-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(3px);
-      z-index: 1;
-    }
-
-    .about-content {
-      position: relative;
-      z-index: 2;
-      max-width: 1000px;
-      padding: 60px 20px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 40px;
-      animation: fadeUp 1.2s ease;
-    }
-
-    .about-text {
-      flex: 1 1 500px;
-    }
-
-    .about-text h1 {
-      font-size: 42px;
-      margin-bottom: 20px;
-      color: #fff;
-      border-left: 5px solid #fff;
-      padding-left: 15px;
-    }
-
-    .about-text p {
-      margin-bottom: 15px;
-      font-size: 17px;
-      line-height: 1.7;
-      color: #eee;
-    }
-
-    .about-image {
-      flex: 1 1 400px;
-      text-align: center;
-    }
-
-    .about-image img {
-      width: 90%;
-      border-radius: 15px;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-    }
-
-    /* Mission & Vision */
-    .mission-vision {
-      background: #fff;
-      color: #333;
-      padding: 60px 20px;
-      text-align: center;
-    }
-
-    .mission-vision h2 {
-      font-size: 30px;
-      color: #316895;
-      margin-bottom: 20px;
-    }
-
-    .mission-vision p {
-      max-width: 800px;
-      margin: 0 auto 40px;
-      line-height: 1.8;
-    }
-
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
+      /* About Section */
+      .about-section {
+        position: relative;
+        background: url("https://cdn.pixabay.com/photo/2024/08/23/11/55/building-8991569_1280.jpg")
+          no-repeat center center/cover;
+        min-height: 100vh;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: left;
       }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
 
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: #fff;
-      font-size: 14px;
-      color: #666;
-      border-top: 1px solid #eee;
-    }
-
-    @media (max-width: 768px) {
-      header {
-        padding: 15px 25px;
+      .about-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(3px);
+        z-index: 1;
       }
+
       .about-content {
-        flex-direction: column;
+        position: relative;
+        z-index: 2;
+        max-width: 1000px;
+        padding: 60px 20px;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 40px;
+        animation: fadeUp 1.2s ease;
+      }
+
+      .about-text {
+        flex: 1 1 500px;
+      }
+
+      .about-text h1 {
+        font-size: 42px;
+        margin-bottom: 20px;
+        color: #fff;
+        border-left: 5px solid #fff;
+        padding-left: 15px;
+      }
+
+      .about-text p {
+        margin-bottom: 15px;
+        font-size: 17px;
+        line-height: 1.7;
+        color: #eee;
+      }
+
+      .about-image {
+        flex: 1 1 400px;
         text-align: center;
       }
-      .about-text h1 {
-        font-size: 32px;
-      }
-    }
-  </style>
-</head>
-<body>
 
-  <!--header-->
+      .about-image img {
+        width: 90%;
+        border-radius: 15px;
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+      }
+
+      /* Mission & Vision */
+      .mission-vision {
+        background: #fff;
+        color: #333;
+        padding: 60px 20px;
+        text-align: center;
+      }
+
+      .mission-vision h2 {
+        font-size: 30px;
+        color: #316895;
+        margin-bottom: 20px;
+      }
+
+      .mission-vision p {
+        max-width: 800px;
+        margin: 0 auto 40px;
+        line-height: 1.8;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      footer {
+        text-align: center;
+        padding: 20px;
+        background: #fff;
+        font-size: 14px;
+        color: #666;
+        border-top: 1px solid #eee;
+      }
+
+      /* Responsive header/nav */
+      .menu-btn {
+        display: none;
+        background: transparent;
+        border: 0;
+        color: #fff;
+        font-size: 22px;
+        padding: 6px;
+        cursor: pointer;
+      }
+      @media (max-width: 900px) {
+        header {
+          padding: 12px 18px;
+          grid-template-columns: auto 1fr auto;
+        }
+        .nav-left {
+          display: none;
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 64px;
+          background: rgba(4, 8, 15, 0.9);
+          padding: 12px;
+          flex-direction: column;
+          gap: 12px;
+          z-index: 30;
+        }
+        .nav-left a {
+          display: block;
+          padding: 10px 12px;
+        }
+        .menu-btn {
+          display: inline-flex;
+          align-items: center;
+        }
+        .brand {
+          margin-right: auto;
+        }
+        .about-content {
+          padding: 30px 12px;
+          gap: 20px;
+        }
+        .about-image img {
+          width: 100%;
+          height: auto;
+        }
+      }
+      @media (max-width: 420px) {
+        .about-text h1 {
+          font-size: 28px;
+        }
+        .brand-name {
+          font-size: 16px;
+        }
+        .nav-left {
+          top: 56px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!--header-->
     <header>
       <!-- Brand: school icon + Smart School heading -->
       <a href="/" class="brand" aria-label="Smart School Home">
@@ -364,7 +410,7 @@
       </a>
 
       <!-- Centered nav -->
-      <div class="nav-left" aria-label="Main navigation">
+      <div class="nav-left" aria-label="Main navigation" id="main-nav">
         <a href="/">Home</a>
         <a href="/" class="active">About</a>
         <a href="/features">Features</a>
@@ -435,49 +481,58 @@
           Login
         </button>
       </div>
+
+      <button id="menu-btn" class="menu-btn" aria-label="Open menu">☰</button>
     </header>
 
-  <!-- About Section -->
-  <section class="about-section">
-    <div class="about-overlay"></div>
-    <div class="about-content">
-      <div class="about-text">
-        <h1>About Our School Management System</h1>
-        <p>
-          Our School Management System is a complete digital platform that simplifies all academic and administrative tasks. 
-          It connects teachers, students, parents, and administrators seamlessly, ensuring transparency and efficiency in every operation.
-        </p>
-        <p>
-          From attendance tracking to online exams, result management, and real-time communication — everything is made easier and smarter.
-          The goal is to empower educational institutions with technology that saves time, improves productivity, and enhances learning outcomes.
-        </p>
+    <!-- About Section -->
+    <section class="about-section">
+      <div class="about-overlay"></div>
+      <div class="about-content">
+        <div class="about-text">
+          <h1>About Our School Management System</h1>
+          <p>
+            Our School Management System is a complete digital platform that
+            simplifies all academic and administrative tasks. It connects
+            teachers, students, parents, and administrators seamlessly, ensuring
+            transparency and efficiency in every operation.
+          </p>
+          <p>
+            From attendance tracking to online exams, result management, and
+            real-time communication — everything is made easier and smarter. The
+            goal is to empower educational institutions with technology that
+            saves time, improves productivity, and enhances learning outcomes.
+          </p>
+        </div>
+        <div class="about-image">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/3062/3062634.png"
+            alt="School Management Illustration"
+          />
+        </div>
       </div>
-      <div class="about-image">
-        <img src="https://cdn-icons-png.flaticon.com/512/3062/3062634.png" alt="School Management Illustration">
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Mission & Vision -->
-  <section class="mission-vision">
-    <h2>🎯 Our Mission</h2>
-    <p>
-      To make school management efficient, transparent, and paperless by integrating modern technology into everyday educational workflows.
-    </p>
+    <!-- Mission & Vision -->
+    <section class="mission-vision">
+      <h2>🎯 Our Mission</h2>
+      <p>
+        To make school management efficient, transparent, and paperless by
+        integrating modern technology into everyday educational workflows.
+      </p>
 
-    <h2>🌱 Our Vision</h2>
-    <p>
-      To become a leading educational platform that enables institutions to provide smarter, data-driven, and student-focused learning environments.
-    </p>
-  </section>
+      <h2>🌱 Our Vision</h2>
+      <p>
+        To become a leading educational platform that enables institutions to
+        provide smarter, data-driven, and student-focused learning environments.
+      </p>
+    </section>
 
-  <!-- Footer -->
-  <footer>
-    © 2025 School Management System. All rights reserved.
-  </footer>
+    <!-- Footer -->
+    <footer>© 2025 School Management System. All rights reserved.</footer>
 
-   <script>
-    (function () {
+    <script>
+      (function () {
         const userWrap = document.getElementById("home-user");
         const userBtn = document.getElementById("home-user-btn");
         const menu = document.getElementById("home-user-menu");
@@ -568,7 +623,26 @@
           }
         })();
       })();
-   </script>
-
-</body>
+    </script>
+    <script>
+      (function () {
+        const btn = document.getElementById("menu-btn");
+        const nav = document.getElementById("main-nav");
+        if (!btn || !nav) return;
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          nav.style.display =
+            nav.style.display === "flex" || nav.style.display === ""
+              ? "none"
+              : "flex";
+        });
+        document.addEventListener("click", () => {
+          if (window.innerWidth <= 900) nav.style.display = "none";
+        });
+        window.addEventListener("resize", () => {
+          if (window.innerWidth > 900) nav.style.display = "";
+        });
+      })();
+    </script>
+  </body>
 </html>
