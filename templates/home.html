@@ -243,7 +243,7 @@
         transform: translateY(-1px);
       }
       .home-avatar {
-        margin-left : 5px;
+        margin-left: 5px;
         width: 40px;
         height: 40px;
         border-radius: 50%;
@@ -318,19 +318,50 @@
         font-weight: 800;
       }
 
-      @media (max-width: 768px) {
-        .home-username {
+      .menu-btn {
+        display: none;
+        background: transparent;
+        border: 0;
+        color: #fff;
+        font-size: 22px;
+        padding: 6px;
+        cursor: pointer;
+      }
+
+      @media (max-width: 900px) {
+        header {
+          padding: 12px 14px;
+          grid-template-columns: auto 1fr auto;
+        }
+        .nav-left {
           display: none;
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 64px;
+          background: rgba(4, 8, 15, 0.9);
+          padding: 12px;
+          flex-direction: column;
+          gap: 12px;
+          z-index: 30;
+        }
+        .menu-btn {
+          display: inline-flex;
         }
         .hero-text h1 {
-          font-size: 36px;
+          font-size: 32px;
         }
         .hero-text p {
-          font-size: 16px;
+          font-size: 15px;
+          padding: 0 8px;
         }
-        header {
-          padding: 15px 30px;
-          grid-template-columns: auto 1fr auto;
+      }
+      @media (max-width: 420px) {
+        .hero-text h1 {
+          font-size: 26px;
+        }
+        .brand-name {
+          font-size: 15px;
         }
       }
     </style>
@@ -357,7 +388,8 @@
       </a>
 
       <!-- Centered nav -->
-      <div class="nav-left" aria-label="Main navigation">
+      <button id="menu-btn" class="menu-btn" aria-label="Open menu">☰</button>
+      <div class="nav-left" aria-label="Main navigation" id="main-nav">
         <a href="/" class="active">Home</a>
         <a href="/about">About</a>
         <a href="/features">Features</a>
@@ -440,8 +472,8 @@
         </h1>
         <p>
           Streamline your school operations with modern digital tools. Manage
-          students , attendance , timetables , homework and parent communication—all from one
-          platform.
+          students , attendance , timetables , homework and parent
+          communication—all from one platform.
         </p>
         <div class="buttons">
           <button type="button" onclick="window.location.href='/index'">
@@ -545,6 +577,25 @@
             renderAvatar({});
           }
         })();
+      })();
+
+      (function () {
+        const btn = document.getElementById("menu-btn");
+        const nav = document.getElementById("main-nav");
+        if (!btn || !nav) return;
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          nav.style.display =
+            nav.style.display === "flex" || nav.style.display === ""
+              ? "none"
+              : "flex";
+        });
+        document.addEventListener("click", () => {
+          if (window.innerWidth <= 900) nav.style.display = "none";
+        });
+        window.addEventListener("resize", () => {
+          if (window.innerWidth > 900) nav.style.display = "";
+        });
       })();
     </script>
   </body>
