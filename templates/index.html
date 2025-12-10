@@ -850,16 +850,16 @@
           display: inline-flex;
         }
         .wrap {
-          padding: 16px;
+          padding: 12px;
         }
+      }
+
+      @media (max-width: 420px) {
         .header-content {
-          grid-template-columns: auto 1fr auto;
+          padding: 6px;
         }
-        body.sidebar-collapsed .main-container {
-          margin-left: 0;
-        } /* collapse ignored on mobile layout */
-        .header-actions .user-name {
-          display: none;
+        h1 {
+          font-size: 18px;
         }
       }
 
@@ -1045,6 +1045,31 @@
       }
       .modal .dialog {
         width: min(460px, 96vw);
+      }
+
+      /* Ensure main container uses full width on very small screens */
+      @media (max-width: 768px) {
+        .main-container {
+          margin-left: 0 !important;
+        }
+        .sidebar {
+          transform: translateX(-100%);
+        }
+        .menu-toggle {
+          display: inline-flex;
+        }
+        .wrap {
+          padding: 12px;
+        }
+      }
+
+      @media (max-width: 420px) {
+        .header-content {
+          padding: 6px;
+        }
+        h1 {
+          font-size: 18px;
+        }
       }
     </style>
   </head>
@@ -2083,20 +2108,7 @@
         C.append(setHW, markHW, viewD);
 
         ensureRollDatalist($("#m_roll", markHW));
-        ensureRollDatalist($("#vd_roll", viewD));
-
-        const hList = $("#h_list", setHW);
-        function addTaskRow() {
-          const row = div("row");
-          row.innerHTML = `
-      <input placeholder="Subject">
-      <input placeholder="Homework / Task">
-      <button class="secondary">Remove</button>
-    `;
-          row.lastElementChild.onclick = () => row.remove();
-          hList.appendChild(row);
-        }
-        $("#h_add", setHW).onclick = addTaskRow;
+        ensureRollDatalist;
 
         $("#h_save", setHW).onclick = async () => {
           const day = capitalize($("#h_day", setHW).value);
