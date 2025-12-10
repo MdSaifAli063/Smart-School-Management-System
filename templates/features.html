@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Features | School Management System</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Features | School Management System</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
 
-    body, html {
-      height: 100%;
-      scroll-behavior: smooth;
-      background: #f5f7fa;
-    }
+      body,
+      html {
+        height: 100%;
+        scroll-behavior: smooth;
+        background: #f5f7fa;
+      }
 
-   /* Header: centered nav, better readability */
+      /* Header: centered nav, better readability */
       header {
         display: grid;
         grid-template-columns: auto 1fr auto;
@@ -146,7 +147,7 @@
         transform: translateY(-1px);
       }
       .home-avatar {
-        margin-left : 5px;
+        margin-left: 5px;
         width: 40px;
         height: 40px;
         border-radius: 50%;
@@ -221,144 +222,176 @@
         font-weight: 800;
       }
 
-    /* Hero Section */
-    .feature-hero {
-      position: relative;
-      background: url('https://cdn.pixabay.com/photo/2024/08/23/11/55/building-8991569_1280.jpg') no-repeat center center/cover;
-      height: 60vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      color: #fff;
-      overflow: hidden;
-    }
-
-    .feature-hero::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(3px);
-      z-index: 1;
-    }
-
-    .hero-text {
-      position: relative;
-      z-index: 2;
-      animation: fadeUp 1.2s ease;
-    }
-
-    .hero-text h1 {
-      font-size: 46px;
-      margin-bottom: 15px;
-    }
-
-    .hero-text p {
-      font-size: 18px;
-      color: #eee;
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    /* Features Section */
-    .features-section {
-      background: #fff;
-      padding: 80px 20px;
-      text-align: center;
-    }
-
-    .features-section h2 {
-      font-size: 36px;
-      color: #316895;
-      margin-bottom: 20px;
-    }
-
-    .features-section p {
-      max-width: 800px;
-      margin: 0 auto 50px;
-      color: #555;
-      line-height: 1.8;
-      font-size: 16px;
-    }
-
-    .feature-boxes {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 30px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .feature-box {
-      background: #f5f7fa;
-      border-radius: 20px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      padding: 30px;
-      flex: 1 1 300px;
-      transition: transform 0.3s, box-shadow 0.3s;
-      animation: fadeUp 1.3s ease;
-    }
-
-    .feature-box:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .feature-box h3 {
-      color: #316895;
-      margin-bottom: 15px;
-      font-size: 22px;
-    }
-
-    .feature-box p {
-      color: #444;
-      font-size: 15px;
-      line-height: 1.7;
-    }
-
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: #fff;
-      font-size: 14px;
-      color: #666;
-      border-top: 1px solid #eee;
-      margin-top: 60px;
-    }
-
-    @media (max-width: 768px) {
-      header {
-        padding: 15px 25px;
-      }
-      .hero-text h1 {
-        font-size: 34px;
-      }
-      .feature-boxes {
-        flex-direction: column;
+      /* Hero Section */
+      .feature-hero {
+        position: relative;
+        background: url("https://cdn.pixabay.com/photo/2024/08/23/11/55/building-8991569_1280.jpg")
+          no-repeat center center/cover;
+        height: 60vh;
+        display: flex;
         align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #fff;
+        overflow: hidden;
       }
-    }
-  </style>
-</head>
-<body>
 
-  <!-- Header -->
+      .feature-hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(3px);
+        z-index: 1;
+      }
+
+      .hero-text {
+        position: relative;
+        z-index: 2;
+        animation: fadeUp 1.2s ease;
+      }
+
+      .hero-text h1 {
+        font-size: 46px;
+        margin-bottom: 15px;
+      }
+
+      .hero-text p {
+        font-size: 18px;
+        color: #eee;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      /* Features Section */
+      .features-section {
+        background: #fff;
+        padding: 80px 20px;
+        text-align: center;
+      }
+
+      .features-section h2 {
+        font-size: 36px;
+        color: #316895;
+        margin-bottom: 20px;
+      }
+
+      .features-section p {
+        max-width: 800px;
+        margin: 0 auto 50px;
+        color: #555;
+        line-height: 1.8;
+        font-size: 16px;
+      }
+
+      .feature-boxes {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      .feature-box {
+        background: #f5f7fa;
+        border-radius: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        padding: 30px;
+        flex: 1 1 300px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        animation: fadeUp 1.3s ease;
+      }
+
+      .feature-box:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .feature-box h3 {
+        color: #316895;
+        margin-bottom: 15px;
+        font-size: 22px;
+      }
+
+      .feature-box p {
+        color: #444;
+        font-size: 15px;
+        line-height: 1.7;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      footer {
+        text-align: center;
+        padding: 20px;
+        background: #fff;
+        font-size: 14px;
+        color: #666;
+        border-top: 1px solid #eee;
+        margin-top: 60px;
+      }
+
+      .menu-btn {
+        display: none;
+        background: transparent;
+        border: 0;
+        color: #fff;
+        font-size: 22px;
+        padding: 6px;
+        cursor: pointer;
+      }
+
+      @media (max-width: 900px) {
+        header {
+          padding: 12px 16px;
+          grid-template-columns: auto 1fr auto;
+        }
+        .nav-left {
+          display: none;
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 64px;
+          background: rgba(4, 8, 15, 0.9);
+          padding: 12px;
+          flex-direction: column;
+          gap: 12px;
+          z-index: 30;
+        }
+        .menu-btn {
+          display: inline-flex;
+        }
+        .feature-boxes {
+          flex-direction: column;
+        }
+        .hero-text h1 {
+          font-size: 34px;
+        }
+      }
+      @media (max-width: 420px) {
+        .feature-box h3 {
+          font-size: 18px;
+        }
+      }
+
+      /* ...existing code... */
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
     <header>
       <!-- Brand: school icon + Smart School heading -->
       <a href="/" class="brand" aria-label="Smart School Home">
@@ -378,8 +411,10 @@
         <span class="brand-name">Smart School</span>
       </a>
 
+      <button id="menu-btn" class="menu-btn" aria-label="Open menu">☰</button>
+
       <!-- Centered nav -->
-      <div class="nav-left" aria-label="Main navigation">
+      <div class="nav-left" aria-label="Main navigation" id="main-nav">
         <a href="/">Home</a>
         <a href="/about">About</a>
         <a href="/" class="active">Features</a>
@@ -452,54 +487,73 @@
       </div>
     </header>
 
-
-  <!-- Hero Section -->
-  <section class="feature-hero">
-    <div class="hero-text">
-      <h1>Our Smart Features</h1>
-      <p>Empowering teachers, students, and parents with digital tools that simplify school life.</p>
-    </div>
-  </section>
-
-  <!-- Features Section -->
-  <section class="features-section">
-    <h2>Key Modules</h2>
-    <p>Discover how our system enhances productivity and engagement for schools with intelligent, easy-to-use features.</p>
-
-    <div class="feature-boxes">
-      <div class="feature-box">
-        <h3>📅 Timetable Management</h3>
-        <p>Auto-generate and manage class schedules with drag-and-drop ease. Keep teachers and students always updated with live timetable notifications.</p>
+    <!-- Hero Section -->
+    <section class="feature-hero">
+      <div class="hero-text">
+        <h1>Our Smart Features</h1>
+        <p>
+          Empowering teachers, students, and parents with digital tools that
+          simplify school life.
+        </p>
       </div>
+    </section>
 
-      <div class="feature-box">
-        <h3>🧾 Attendance Tracking</h3>
-        <p>Mark and track attendance digitally — view monthly summaries, late entries, and absences with a single click.</p>
+    <!-- Features Section -->
+    <section class="features-section">
+      <h2>Key Modules</h2>
+      <p>
+        Discover how our system enhances productivity and engagement for schools
+        with intelligent, easy-to-use features.
+      </p>
+
+      <div class="feature-boxes">
+        <div class="feature-box">
+          <h3>📅 Timetable Management</h3>
+          <p>
+            Auto-generate and manage class schedules with drag-and-drop ease.
+            Keep teachers and students always updated with live timetable
+            notifications.
+          </p>
+        </div>
+
+        <div class="feature-box">
+          <h3>🧾 Attendance Tracking</h3>
+          <p>
+            Mark and track attendance digitally — view monthly summaries, late
+            entries, and absences with a single click.
+          </p>
+        </div>
+
+        <div class="feature-box">
+          <h3>📚 Homework & Diary</h3>
+          <p>
+            Assign homework, manage submissions, and send daily diary updates to
+            parents. Stay connected with academic progress in real-time.
+          </p>
+        </div>
+
+        <div class="feature-box">
+          <h3>🍱 Lunch & Daily Activity</h3>
+          <p>
+            Monitor meal plans, nutrition updates, and classroom activities.
+            Promote student well-being through transparency and parent updates.
+          </p>
+        </div>
+
+        <div class="feature-box">
+          <h3>🌟 Student Behavior</h3>
+          <p>
+            Track and improve behavior patterns with teacher notes, feedback,
+            and positive reinforcement reports shared directly with parents.
+          </p>
+        </div>
       </div>
+    </section>
 
-      <div class="feature-box">
-        <h3>📚 Homework & Diary</h3>
-        <p>Assign homework, manage submissions, and send daily diary updates to parents. Stay connected with academic progress in real-time.</p>
-      </div>
+    <!-- Footer -->
+    <footer>© 2025 School Management System. All rights reserved.</footer>
 
-      <div class="feature-box">
-        <h3>🍱 Lunch & Daily Activity</h3>
-        <p>Monitor meal plans, nutrition updates, and classroom activities. Promote student well-being through transparency and parent updates.</p>
-      </div>
-
-      <div class="feature-box">
-        <h3>🌟 Student Behavior</h3>
-        <p>Track and improve behavior patterns with teacher notes, feedback, and positive reinforcement reports shared directly with parents.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    © 2025 School Management System. All rights reserved.
-  </footer>
-
-  <script>
+    <script>
       (function () {
         const userWrap = document.getElementById("home-user");
         const userBtn = document.getElementById("home-user-btn");
@@ -593,5 +647,25 @@
       })();
     </script>
 
-</body>
+    <script>
+      (function () {
+        const btn = document.getElementById("menu-btn");
+        const nav = document.getElementById("main-nav");
+        if (!btn || !nav) return;
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          nav.style.display =
+            nav.style.display === "flex" || nav.style.display === ""
+              ? "none"
+              : "flex";
+        });
+        document.addEventListener("click", () => {
+          if (window.innerWidth <= 900) nav.style.display = "none";
+        });
+        window.addEventListener("resize", () => {
+          if (window.innerWidth > 900) nav.style.display = "";
+        });
+      })();
+    </script>
+  </body>
 </html>
