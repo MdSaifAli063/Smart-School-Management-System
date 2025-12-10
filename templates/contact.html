@@ -22,14 +22,14 @@
       /* Header: centered nav, better readability */
       header {
         display: grid;
-        grid-template-columns: auto 1fr auto;
+        grid-template-columns: auto minmax(200px, 1fr) auto;
         align-items: center;
-        padding: 22px 56px;
+        padding: 14px 28px;
         position: absolute;
         top: 0;
         width: 100%;
         z-index: 10;
-        gap: 16px;
+        gap: 12px;
       }
 
       /* Brand: school icon + Smart School */
@@ -64,12 +64,11 @@
 
       /* Centered navbar */
       .nav-left {
-        /* shift navbar a bit left of center */
-        justify-self: start;
-        margin-left: 344px; /* tweak this value to move more/less */
+        justify-self: center;
         display: inline-flex;
         align-items: center;
-        gap: clamp(14px, 2.8vw, 32px);
+        gap: clamp(12px, 3vw, 28px);
+        z-index: 25;
       }
       .nav-left a {
         text-decoration: none;
@@ -399,20 +398,27 @@
 
       @media (max-width: 900px) {
         header {
-          padding: 12px 16px;
+          padding: 12px 14px;
           grid-template-columns: auto 1fr auto;
         }
         .nav-left {
-          display: none;
           position: absolute;
-          left: 0;
-          right: 0;
-          top: 64px;
-          background: rgba(4, 8, 15, 0.9);
+          left: 50%;
+          transform: translateX(-50%);
+          top: calc(100% + 8px);
+          background: rgba(4, 8, 15, 0.95);
           padding: 12px;
+          border-radius: 12px;
+          display: none;
           flex-direction: column;
-          gap: 12px;
-          z-index: 30;
+          gap: 8px;
+          width: min(92%, 420px);
+          text-align: center;
+          box-shadow: 0 18px 40px rgba(2, 6, 23, 0.5);
+        }
+        .nav-left a {
+          display: block;
+          padding: 10px 12px;
         }
         .menu-btn {
           display: inline-flex;
@@ -426,11 +432,6 @@
         .contact-container {
           flex-direction: column;
           gap: 18px;
-        }
-        .contact-form input,
-        .contact-form textarea,
-        .contact-form select {
-          font-size: 15px;
         }
       }
       @media (max-width: 420px) {
@@ -700,16 +701,14 @@
         if (!btn || !nav) return;
         btn.addEventListener("click", (e) => {
           e.stopPropagation();
-          nav.style.display =
-            nav.style.display === "flex" || nav.style.display === ""
-              ? "none"
-              : "flex";
+          nav.style.display = nav.style.display === "flex" ? "none" : "flex";
         });
         document.addEventListener("click", () => {
           if (window.innerWidth <= 900) nav.style.display = "none";
         });
         window.addEventListener("resize", () => {
           if (window.innerWidth > 900) nav.style.display = "";
+          else nav.style.display = "none";
         });
       })();
     </script>
