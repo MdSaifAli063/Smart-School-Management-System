@@ -11,6 +11,12 @@ Why use this project?
 - 📣 Email preview & send via SMTP.
 - 🔧 Minimal UI + simple REST endpoints for rapid prototyping.
 
+### Preview
+  
+![image](https://github.com/MdSaifAli063/Smart-School-Management-System/blob/d34679e15d692e0be0e05ecb7c5a4874779f6021/Screenshot%202025-12-08%20095737.png)
+
+![image](https://github.com/MdSaifAli063/Smart-School-Management-System/blob/a21486394b97e9d973f660cb0309f22700f82a2f/Screenshot%202025-12-08%20095931.png)
+
 ---
 
 ## Table of Contents
