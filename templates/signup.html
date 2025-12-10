@@ -348,15 +348,9 @@
 
       @media (max-width: 520px) {
         .card {
-          padding: 18px 14px;
-          border-radius: 14px;
           width: calc(100% - 28px);
-        }
-        .brand h1 {
-          font-size: 18px;
-        }
-        .input-wrap input {
-          padding: 12px 12px;
+          padding: 18px;
+          border-radius: 14px;
         }
         .actions {
           flex-direction: column-reverse;
@@ -365,6 +359,20 @@
         .btn {
           width: 100%;
           min-width: 0;
+        }
+        .row-meta {
+          flex-direction: column;
+          gap: 6px;
+          align-items: flex-start;
+        }
+        body::after {
+          display: none;
+        }
+      }
+      @media (max-width: 768px) {
+        .card {
+          margin: 10px;
+          width: calc(100% - 20px);
         }
       }
       @media (prefers-reduced-motion: reduce) {
