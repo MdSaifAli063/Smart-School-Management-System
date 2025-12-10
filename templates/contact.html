@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contact | School Management System</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact | School Management System</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+      }
 
-    body, html {
-      height: 100%;
-      scroll-behavior: smooth;
-      background: #f5f7fa;
-    }
+      body,
+      html {
+        height: 100%;
+        scroll-behavior: smooth;
+        background: #f5f7fa;
+      }
 
-    /* Header: centered nav, better readability */
+      /* Header: centered nav, better readability */
       header {
         display: grid;
         grid-template-columns: auto 1fr auto;
@@ -146,7 +147,7 @@
         transform: translateY(-1px);
       }
       .home-avatar {
-        margin-left : 5px;
+        margin-left: 5px;
         width: 40px;
         height: 40px;
         border-radius: 50%;
@@ -221,187 +222,228 @@
         font-weight: 800;
       }
 
-    /* Hero Section */
-    .contact-hero {
-      position: relative;
-      background: url('https://cdn.pixabay.com/photo/2024/08/23/11/55/building-8991569_1280.jpg') no-repeat center center/cover;
-      height: 60vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      color: #fff;
-      overflow: hidden;
-    }
-
-    .contact-hero::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(3px);
-      z-index: 1;
-    }
-
-    .hero-text {
-      position: relative;
-      z-index: 2;
-      animation: fadeUp 1.2s ease;
-    }
-
-    .hero-text h1 {
-      font-size: 46px;
-      margin-bottom: 15px;
-    }
-
-    .hero-text p {
-      font-size: 18px;
-      color: #eee;
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    /* Contact Section */
-    .contact-section {
-      background: #fff;
-      padding: 80px 20px;
-      text-align: center;
-    }
-
-    .contact-section h2 {
-      font-size: 36px;
-      color: #316895;
-      margin-bottom: 20px;
-    }
-
-    .contact-section p {
-      max-width: 800px;
-      margin: 0 auto 50px;
-      color: #555;
-      line-height: 1.8;
-      font-size: 16px;
-    }
-
-    .contact-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 40px;
-      max-width: 1000px;
-      margin: 0 auto;
-    }
-
-    .contact-info {
-      flex: 1 1 300px;
-      background: #f5f7fa;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      text-align: left;
-      animation: fadeUp 1.3s ease;
-    }
-
-    .contact-info h3 {
-      color: #316895;
-      margin-bottom: 20px;
-    }
-
-    .contact-info p {
-      margin-bottom: 15px;
-      color: #444;
-    }
-
-    .contact-form {
-      flex: 1 1 500px;
-      background: #f5f7fa;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      animation: fadeUp 1.5s ease;
-    }
-
-    .contact-form form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .contact-form input,
-    .contact-form select,
-    .contact-form textarea {
-      width: 100%;
-      padding: 12px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      font-size: 15px;
-      outline: none;
-      transition: 0.3s;
-    }
-
-    .contact-form input:focus,
-    .contact-form textarea:focus,
-    .contact-form select:focus {
-      border-color: #316895;
-      box-shadow: 0 0 5px rgba(49, 104, 149, 0.4);
-    }
-
-    .contact-form button {
-      padding: 12px;
-      border-radius: 25px;
-      border: none;
-      background: #316895;
-      color: #fff;
-      font-size: 16px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .contact-form button:hover {
-      background: #214e73;
-    }
-
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(40px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: #fff;
-      font-size: 14px;
-      color: #666;
-      border-top: 1px solid #eee;
-      margin-top: 60px;
-    }
-
-    @media (max-width: 768px) {
-      header {
-        padding: 15px 25px;
-      }
-      .hero-text h1 {
-        font-size: 34px;
-      }
-      .contact-container {
-        flex-direction: column;
+      /* Hero Section */
+      .contact-hero {
+        position: relative;
+        background: url("https://cdn.pixabay.com/photo/2024/08/23/11/55/building-8991569_1280.jpg")
+          no-repeat center center/cover;
+        height: 60vh;
+        display: flex;
         align-items: center;
+        justify-content: center;
+        text-align: center;
+        color: #fff;
+        overflow: hidden;
       }
-    }
-  </style>
-</head>
-<body>
 
-  <!-- Header -->
+      .contact-hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(3px);
+        z-index: 1;
+      }
+
+      .hero-text {
+        position: relative;
+        z-index: 2;
+        animation: fadeUp 1.2s ease;
+      }
+
+      .hero-text h1 {
+        font-size: 46px;
+        margin-bottom: 15px;
+      }
+
+      .hero-text p {
+        font-size: 18px;
+        color: #eee;
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      /* Contact Section */
+      .contact-section {
+        background: #fff;
+        padding: 80px 20px;
+        text-align: center;
+      }
+
+      .contact-section h2 {
+        font-size: 36px;
+        color: #316895;
+        margin-bottom: 20px;
+      }
+
+      .contact-section p {
+        max-width: 800px;
+        margin: 0 auto 50px;
+        color: #555;
+        line-height: 1.8;
+        font-size: 16px;
+      }
+
+      .contact-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 40px;
+        max-width: 1000px;
+        margin: 0 auto;
+      }
+
+      .contact-info {
+        flex: 1 1 300px;
+        background: #f5f7fa;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        text-align: left;
+        animation: fadeUp 1.3s ease;
+      }
+
+      .contact-info h3 {
+        color: #316895;
+        margin-bottom: 20px;
+      }
+
+      .contact-info p {
+        margin-bottom: 15px;
+        color: #444;
+      }
+
+      .contact-form {
+        flex: 1 1 500px;
+        background: #f5f7fa;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        animation: fadeUp 1.5s ease;
+      }
+
+      .contact-form form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .contact-form input,
+      .contact-form select,
+      .contact-form textarea {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 15px;
+        outline: none;
+        transition: 0.3s;
+      }
+
+      .contact-form input:focus,
+      .contact-form textarea:focus,
+      .contact-form select:focus {
+        border-color: #316895;
+        box-shadow: 0 0 5px rgba(49, 104, 149, 0.4);
+      }
+
+      .contact-form button {
+        padding: 12px;
+        border-radius: 25px;
+        border: none;
+        background: #316895;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+
+      .contact-form button:hover {
+        background: #214e73;
+      }
+
+      .menu-btn {
+        display: none;
+        background: transparent;
+        border: 0;
+        color: #fff;
+        font-size: 22px;
+        padding: 6px;
+        cursor: pointer;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      footer {
+        text-align: center;
+        padding: 20px;
+        background: #fff;
+        font-size: 14px;
+        color: #666;
+        border-top: 1px solid #eee;
+        margin-top: 60px;
+      }
+
+      @media (max-width: 900px) {
+        header {
+          padding: 12px 16px;
+          grid-template-columns: auto 1fr auto;
+        }
+        .nav-left {
+          display: none;
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 64px;
+          background: rgba(4, 8, 15, 0.9);
+          padding: 12px;
+          flex-direction: column;
+          gap: 12px;
+          z-index: 30;
+        }
+        .menu-btn {
+          display: inline-flex;
+        }
+        .contact-hero {
+          height: 45vh;
+        }
+        .contact-section {
+          padding: 28px 12px;
+        }
+        .contact-container {
+          flex-direction: column;
+          gap: 18px;
+        }
+        .contact-form input,
+        .contact-form textarea,
+        .contact-form select {
+          font-size: 15px;
+        }
+      }
+      @media (max-width: 420px) {
+        .hero-text h1 {
+          font-size: 28px;
+        }
+      }
+
+      /* ...existing code... */
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
     <header>
       <!-- Brand: school icon + Smart School heading -->
       <a href="/" class="brand" aria-label="Smart School Home">
@@ -422,7 +464,8 @@
       </a>
 
       <!-- Centered nav -->
-      <div class="nav-left" aria-label="Main navigation">
+      <button id="menu-btn" class="menu-btn" aria-label="Open menu">☰</button>
+      <div class="nav-left" aria-label="Main navigation" id="main-nav">
         <a href="/">Home</a>
         <a href="/about">About</a>
         <a href="/features">Features</a>
@@ -495,53 +538,69 @@
       </div>
     </header>
 
-
-  <!-- Hero Section -->
-  <section class="contact-hero">
-    <div class="hero-text">
-      <h1>Get in Touch</h1>
-      <p>We’d love to hear from you. Whether you’re a school, teacher, or parent — we’re here to help you connect and grow.</p>
-    </div>
-  </section>
-
-  <!-- Contact Section -->
-  <section class="contact-section">
-    <h2>Contact Us</h2>
-    <p>Fill out the form below or reach us through the contact details provided. We’ll respond as soon as possible.</p>
-
-    <div class="contact-container">
-      <div class="contact-info">
-        <h3>Contact Information</h3>
-        <p><strong>📍 Address:</strong> Ghousia College of Engineering ,Ramanagara,Karnataka, India</p>
-        <p><strong>📞 Phone:</strong> +91 98765 43210</p>
-        <p><strong>✉️ Email:</strong> support@schoolms.com</p>
-        <p><strong>🕒 Hours:</strong> Mon - Fri: 9:00 AM - 6:00 PM</p>
+    <!-- Hero Section -->
+    <section class="contact-hero">
+      <div class="hero-text">
+        <h1>Get in Touch</h1>
+        <p>
+          We’d love to hear from you. Whether you’re a school, teacher, or
+          parent — we’re here to help you connect and grow.
+        </p>
       </div>
+    </section>
 
-      <div class="contact-form">
-        <form action="#" method="POST">
-          <input type="text" name="name" placeholder="Your Name" required />
-          <input type="email" name="email" placeholder="Your Email" required />
-          <select name="service" required>
-            <option value="">Select Service</option>
-            <option value="admission">Admission Support</option>
-            <option value="technical">Technical Issue</option>
-            <option value="feedback">Feedback</option>
-            <option value="other">Other</option>
-          </select>
-          <textarea name="message" rows="5" placeholder="Your Message..." required></textarea>
-          <button type="submit">Send Message</button>
-        </form>
+    <!-- Contact Section -->
+    <section class="contact-section">
+      <h2>Contact Us</h2>
+      <p>
+        Fill out the form below or reach us through the contact details
+        provided. We’ll respond as soon as possible.
+      </p>
+
+      <div class="contact-container">
+        <div class="contact-info">
+          <h3>Contact Information</h3>
+          <p>
+            <strong>📍 Address:</strong> Ghousia College of Engineering
+            ,Ramanagara,Karnataka, India
+          </p>
+          <p><strong>📞 Phone:</strong> +91 98765 43210</p>
+          <p><strong>✉️ Email:</strong> support@schoolms.com</p>
+          <p><strong>🕒 Hours:</strong> Mon - Fri: 9:00 AM - 6:00 PM</p>
+        </div>
+
+        <div class="contact-form">
+          <form action="#" method="POST">
+            <input type="text" name="name" placeholder="Your Name" required />
+            <input
+              type="email"
+              name="email"
+              placeholder="Your Email"
+              required
+            />
+            <select name="service" required>
+              <option value="">Select Service</option>
+              <option value="admission">Admission Support</option>
+              <option value="technical">Technical Issue</option>
+              <option value="feedback">Feedback</option>
+              <option value="other">Other</option>
+            </select>
+            <textarea
+              name="message"
+              rows="5"
+              placeholder="Your Message..."
+              required
+            ></textarea>
+            <button type="submit">Send Message</button>
+          </form>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Footer -->
-  <footer>
-    © 2025 School Management System. All rights reserved.
-  </footer>
+    <!-- Footer -->
+    <footer>© 2025 School Management System. All rights reserved.</footer>
 
-  <script>
+    <script>
       (function () {
         const userWrap = document.getElementById("home-user");
         const userBtn = document.getElementById("home-user-btn");
@@ -634,6 +693,25 @@
         })();
       })();
     </script>
-
-</body>
+    <script>
+      (function () {
+        const btn = document.getElementById("menu-btn");
+        const nav = document.getElementById("main-nav");
+        if (!btn || !nav) return;
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          nav.style.display =
+            nav.style.display === "flex" || nav.style.display === ""
+              ? "none"
+              : "flex";
+        });
+        document.addEventListener("click", () => {
+          if (window.innerWidth <= 900) nav.style.display = "none";
+        });
+        window.addEventListener("resize", () => {
+          if (window.innerWidth > 900) nav.style.display = "";
+        });
+      })();
+    </script>
+  </body>
 </html>
